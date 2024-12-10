@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+    <title>
+        Profile
+    </title>
+</head>
+<body>
+    <a href="/">
+        Homepage
+    </a>
+    {% for x in content %}
+        <p>
+            {{x}}
+        </p>
+    {% endfor %}
+    <a href="/profile/update">
+        Update
+    </a>
+    <a href="/logout">
+        Logout
+    </a>
+</body>
