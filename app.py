@@ -22,7 +22,7 @@ class Resto(db.Model):
     beschreibung = db.Column(db.String(555), nullable = False)
     password = db.Column(db.String(20), nullable = False)
     openTime = db.Column(db.String(), nullable = False)
-    wallet = db.Column(db.Integer, nullable=False, default=200)
+    wallet = db.Column(db.Integer, nullable=False, default=0)
 
 class Kunde(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -31,7 +31,7 @@ class Kunde(db.Model):
     adresse = db.Column(db.String(20), unique = False, nullable = False)
     postleitzahl = db.Column(db.Integer(), nullable = False)
     password = db.Column(db.String(20), nullable = False)
-    wallet = db.Column(db.Integer, nullable=False, default=200)
+    wallet = db.Column(db.Integer, nullable=False, default=100)
 
 @app.route('/', methods =["GET", "POST"])
 def homepage():
