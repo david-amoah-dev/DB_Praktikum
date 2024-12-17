@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant & User Registration</title>
+    <style>
+        /* General popup form style */
+        .form-popup {
+            display: none;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            max-height: 500px;
+            border-radius: 10px;
+            top: 50%;
+            left: 50%;
+            padding: 25px 75px 50px 75px;
+            flex-direction: column;
+            align-items: flex-start;
+            flex-shrink: 0;
+            background: #FFF;
+        }
+        .form-popup2 {
+            display: none;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            height: 600px;
+            border-radius: 10px;
+            top: 50%;
+            left: 50%;
+            padding: 25px 75px 50.209px 75px;
+            background: #FFF;
+        }
+
+        /* Style the images in the popup */
+        .form-popup img {
+            width: 100%;
+            height: auto;
+        }
+        /* Style the images in the popup */
+        .form-popup2 img {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Style the buttons inside the form */
+        .form-container .btn {
+            background-color: #025252;
+            color: #E98758;
+            padding: 15px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            opacity: 0.9;
+            align-items: center;
+            display: justify;
+            border-radius: 40px;
+            margin-bottom: -10px;
+            font-family: "Istok Web";
+            font-size: 120%;
+        }
+
+        .form-container .btn:hover {
+            opacity: 1;
+        }
+
+        /* Style the cancel button */
+        .form-container .cancel {
+            background-color: #E98758;
+            color:#025252;
+            padding: 15px;
+            align-items: center;
+            display: justify;
+            border-radius: 40px;
+            font-family: "Istok Web";
+        }
+
+        /* Register button style */
+        .register {
+            background-color: #E98758;
+            color:#025252;
+            padding: 10px;
+            align-items: center;
+            display: justify;
+            border-radius: 15px;
+            font-family: "Istok Web";
+            font-size: 100%;
+            opacity: 0.9;
+        }
+
+        .register:hover {
+            opacity: 1;
+            background-color: #E98758;
+            
+        }
+        label {
+        font-family: "Istok Web";
+        font-size: 16px;
+        color: #333;
+        display: block;
+        margin: 5px 0 2px;
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Button to open the user registration form -->
+    <button class="btn register" onclick="openForm('userForm')"><b>Kunden registrieren</b></button>
+
+    <!-- Button to open the restaurant registration form -->
+    <button class="btn register" onclick="openForm('restaurantForm')"><b>Restaurant registrieren</b></button>
+
+    <!-- User Registration Form -->
+    <div class="form-popup" id="userForm">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="User Icon">
+        <form action="{{ url_for('registerKunde') }}" class="form-container" method="post">
+            <h1>Benutzer registrieren</h1>
+            <label for="vorname"><b>Vorname</b></label>
+            <input type="text" placeholder="Vorname" name="vorname" required>
+
+            <label for="nachname"><b>Nachname</b></label>
+            <input type="text" placeholder="Nachname" name="nachname" required>
+
+            <label for="adresse"><b>Adresse</b></label>
+            <input type="text" placeholder="Adresse" name="adresse" required>
+
+            <label for="postleitzahl"><b>Postleitzahl</b></label>
+            <input type="number" placeholder="Postleitzahl" name="postleitzahl" required>
+
+            <label for="password"><b>Passwort</b></label>
+            <input type="password" placeholder="Passwort" name="password" required>
+
+            <button type="submit" class="btn"><b>registrieren</b></button>
+            <button type="button" class="btn cancel" onclick="closeForm('userForm')"><b>schließen</b></button>
+        </form>
+    </div>
+
+    <!-- Restaurant Registration Form -->
+    <div class="form-popup2" id="restaurantForm">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Restaurant Icon">
+        <form action="{{ url_for('registerResto') }}" class="form-container" method="post">
+            <h1>Restaurant registrieren</h1>
+            <label for="name"><b>Name</b></label>
+            <input type="text" placeholder="Restaurant Name" name="name" required>
+
+            <label for="strasse"><b>Strasse</b></label>
+            <input type="text" placeholder="Strasse" name="strasse" required>
+
+            <label for="plz"><b>Postleitzahl</b></label>
+            <input type="text" placeholder="Postleitzahl" name="plz" required>
+
+            <label for="Beschreibung"><b>Beschreibung</b></label>
+            <input type="text" placeholder="Beschreibung" name="beschreibung" required>
+
+            <label for="password"><b>Passwort</b></label>
+            <input type="password" placeholder="Passwort" name="password" required>
+
+            <label for="openTime"><b>Öffnungszeit</b></label>
+            <input type="text" placeholder="Öffnungszeit" name="openTime" required>
+
+            <button type="submit" class="btn"><b>registrieren</b></button>
+            <button type="button" class="btn cancel" onclick="closeForm('restaurantForm')"><b>schließen</b></button>
+        </form>
+    </div>
+
+  <script src= "{{ url_for('static', filename='login_popup.js') }}"></script>
+
+</body>
+</html>

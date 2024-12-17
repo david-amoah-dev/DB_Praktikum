@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>/* The popup form - hidden by default */
+    .form-popup {
+        display: none;
+        position: fixed;
+        transform: translate(-50%, -50%);
+        bottom: 0;
+        right: 15px;
+        border: 3px solid #f1f1f1;
+        z-index: 9;
+        background-color: white;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        max-width: 300px;
+        max-height: 500px;
+        border-radius: 10px;
+        top: 50%;
+        left: 50%;
+        padding: 25px 75px 50.209px 75px;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-shrink: 0;
+        background: #FFF 
+    }
+    .form-popup img {
+        width: 100%;  /* Set the same width for both images */
+        height: auto;  /* Set the same height for both images */
+        flex-direction: column;
+        align-items: start;
+
+
+
+        }
+    /* Style the buttons inside the form */
+    .form-container .btn {
+        background-color: #025252;
+        color: #E98758;
+        padding: 15px;
+        border: none;
+        cursor: pointer;
+        width: 100%;
+        margin-top: 20px;
+        opacity: 0.9;
+        align-items: center;
+        display: justify;
+        border-radius: 40px;
+        margin-bottom: -10px;
+        font-family: "Istok Web";
+        font-size: 120%;
+        
+    }
+    
+    /* Add a hover effect for buttons */
+    .form-container .btn:hover {
+        opacity: 1;
+    }
+    
+    /* Style the cancel button */
+    .form-container .cancel {
+        background-color: #E98758;
+        color:#025252;
+        padding: 15px;
+        align-items: center;
+        display: justify;
+        border-radius: 40px;
+        font-family: "Istok Web";
+    }
+     .register{
+        background-color: #E98758;
+        color:#025252;
+        padding: 10px;
+        align-items: center;
+        display: justify;
+        border-radius: 15px;
+        font-family: "Istok Web";
+        font-size: 100%;
+        opacity: 0.9;
+    }
+    .register:hover {
+        opacity: 1;
+        background-color: #E98758;
+    }
+
+    </style>
+</head>
+<body>
+    
+
+<!-- Button to open popup form-->
+ <button class="btn register" onclick="openForm()"><b>click to register</b></button>
+
+ <!-- the form-->
+  <div class="form-popup" id="myForm">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="User Icon">
+    <form action="{{ url_for('registerKunde') }}" class="form-container" method="post">
+        <h1>Register</h1>
+        <label for="vorname"><b>Vorname</b></label>
+        <input type="text" placeholder="Vorname" name="vorname" required>
+
+        <label for="nachname"><b>Nachname</b></label>
+        <input type="text" placeholder="Nachname" name="nachname" required>
+        
+        <label for="adresse"><b>adresse</b></label>
+        <input type="text" placeholder="adresse" name="adresse" required>
+
+        <label for="postleitzahl"><b>postleitzahl</b></label>
+        <input type="number" placeholder="postleitzahl" name="postleitzahl" required>
+
+        <label for="password"><b>password</b></label>
+        <input type="text" placeholder="password" name="password" required>
+
+        <button type="submit" class="btn"><b>Register</b></button>
+        <button type="button" class="btn cancel" onclick="closeForm()"><b>Close</b></button>
+    </form>
+  </div>
+  <script src= "{{ url_for('static', filename='login_popup.js') }}"></script>
+</body>
+</html>
