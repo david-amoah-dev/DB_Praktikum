@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurants Near You</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .restaurant-list {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .restaurant-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .restaurant-item h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+
+        .restaurant-item p {
+            margin: 5px 0;
+        }
+
+        .no-restaurants {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #888;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Restaurants Near You</h1>
+
+    <!-- If there are restaurants, display them, otherwise show a message -->
+    {% if restaurants %}
+        <ul class="restaurant-list">
+            {% for restaurant in restaurants %}
+                <li class="restaurant-item">
+                    <h2>{{ restaurant.name }}</h2>
+                    <p><strong>Address:</strong> {{ restaurant.strasse }}</p>
+                    <p><strong>Postal Code:</strong> {{ restaurant.plz }}</p>
+                    <p><strong>Description:</strong> {{ restaurant.beschreibung }}</p>
+                    <p><strong>Open Time:</strong> {{ restaurant.openTime }}</p>
+                    <p><strong>Wallet Balance:</strong> €{{ restaurant.wallet }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="no-restaurants">No restaurants found in your postal code.</p>
+    {% endif %}
+
+</body>
+</html>
