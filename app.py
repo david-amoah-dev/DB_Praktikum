@@ -44,6 +44,66 @@ class Kunde(db.Model):
 
 with app.app_context():
   db.create_all()
+
+
+
+@app.route('/', methods =["GET", "POST"])
+def homepage():
+    return render_template('index.html')
+# pop up request
+@app.route('/registerKunde', methods=["POST"])
+def registerKunde():
+    if request.method == "POST":
+        vorname = request.form.get("vorname")
+        nachname = request.form.get("nachname")
+        adresse = request.form.get("adresse")
+        postleitzahl = request.form.get("postleitzahl")
+        password = request.form.get("password")
+        # create Kunde
+        new_user = Kunde(
+            vorname=vorname,
+            nachname=nachname,
+            adresse=adresse,
+            postleitzahl=int(postleitzahl),
+            password=password)
+        print(f"Received: {vorname}, {nachname}, {adresse}, {postleitzahl}, {password}")
+        db.session.add(new_user)
+        db.session.commit()
+    return render_template("dog.html")
+
+@app.route('/registerResto', methods=["POST"])
+def registerResto():
+    if request.method == "POST":
+        name = request.form.get("name")
+        strasse = request.form.get("strasse")
+        plz = request.form.get("plz")
+        beschreibung = request.form.get("beschreibung")
+        password = request.form.get("password")
+        openTime = request.form.get("openTime")
+
+        new_resto = Resto(
+            name=name,
+            strasse=strasse,
+            plz=int(plz),
+            beschreibung=beschreibung,
+            password=password,
+            openTime=openTime)
+        print(f"Received: {name}, {strasse}, {plz}, {beschreibung}, {password}, {openTime}")
+        db.session.add(new_resto)
+        db.session.commit()
+    return render_template("index.html")
+
+
+if __name__ == "__main__":
+    # Create all tables within the application context
+    with app.app_context():
+        db.create_all()
+        print(Kunde.query.all())
+        print(Resto.query.all())
+
+    print("Database tables created!")
+    app.run(debug=True)
+
   
 
     
