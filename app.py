@@ -10,15 +10,15 @@ db = SQLAlchemy(model_class=Base)
 # create the app
 app = Flask(__name__)
 # configure the SQLite database, relative to the app instance folder
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project1.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 # initialize the app with the extension
 db.init_app(app)
 
 
 class Resto(db.Model):
     id = db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(20), unique = False, nullable = False)
-    strasse = db.Column(db.String(20), unique = False, nullable = False)
+    name = db.Column(db.String(20), unique = True, nullable = False)
+    strasse = db.Column(db.String(20), unique = True, nullable = False)
     plz = db.Column(db.Integer(), unique = False, nullable = False)
     beschreibung = db.Column(db.String(555), nullable = False)
     password = db.Column(db.String(20), nullable = False)
@@ -37,10 +37,14 @@ class Kunde(db.Model):
     password = db.Column(db.String(20), nullable = False)
     wallet = db.Column(db.Integer, nullable=False, default=200)
 
+
     def __repr__(self):
        return f"Kunde('{self.nachname}')"
+    
+
 with app.app_context():
   db.create_all()
+  
 
     
     

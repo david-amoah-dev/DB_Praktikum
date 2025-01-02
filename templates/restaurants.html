@@ -3,75 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurants Near You</title>
+    <title>GEÖFFNETE RESTAURANTS</title>
     <style>
+        * {
+            box-sizing: border-box; /* Include padding and borders in width/height calculations */
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        /* Applying font styles to all text */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
+            font-family: 'Roboto', sans-serif; /* Apply Roboto font to everything */
+            font-size: 14px; /* Default font size for the entire page */
+            color: #333; /* Dark text color for contrast */
+            background-color: rgba(7, 88, 32, 0.3);
+          
+        }
+        .resto {
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: rgba(229, 133, 23, 0.5);
+            border-style: ridge;
+            border-radius: 16px;
+            height: 200px; /* Adjusted height */
+            width: 400px; /* Adjusted width */
+        }
+        .resto > div:first-child {
+            display: flex;
+            justify-content: center; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+            width: 100%;
+        }
+        .resto > div:nth-child(2) {
+            padding: 5px;
+    
+        }
+        .resto img{
+            display: block;
+            max-width: 100%;  /* Ensures the image does not exceed the column width */
+            height: auto;      /* Maintains aspect ratio */
+            padding: 5px;
+            border-radius: 16px;
+            margin: 0 auto;
+        }
+    
+        .grid-all {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 2px;
+            gap: 20px;
+            justify-items: center;
+            border-style: ridge;
+            border-radius: 16px;
+            padding: 30px;
+            margin: 50px;
+            background-color: white;
+
+
+        }
+        .logo{
+            height: 80px;
+            border-radius: 10px;
+        }
+        .header-layout{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: white;
+            border-radius: 10px;
+        }
+        .header-layout > div:first-child {
+            display: flex;
+            justify-content: left; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+            
+        }
+        .header-layout > div:nth-child(2) {
+            display: flex;
+            justify-content: right;
+            align-items: center; 
+            
+    
         }
 
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .restaurant-list {
-            list-style-type: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        .restaurant-item {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin: 10px auto;
-            padding: 20px;
-            width: 80%;
-            max-width: 600px;
-        }
-
-        .restaurant-item h2 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-
-        .restaurant-item p {
-            margin: 5px 0;
-        }
-
-        .no-restaurants {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 1.2em;
-            color: #888;
-        }
-
+      
     </style>
 </head>
 <body>
+    
+    <div  class=" header-layout">
+        <div>
+            <img class="logo" src="{{ url_for('static', filename='images/LP.png') }} ">
+        </div>
+        <div style=" padding: 10px;">
+            <img style="height: 40px;" src="{{ url_for('static', filename='images/WK.png') }} ">
+        </div>
 
-    <h1>Restaurants Near You</h1>
+    </div>
 
-    <!-- If there are restaurants, display them, otherwise show a message -->
-    {% if restaurants %}
-        <ul class="restaurant-list">
-            {% for restaurant in restaurants %}
-                <li class="restaurant-item">
-                    <h2>{{ restaurant.name }}</h2>
-                    <p><strong>Address:</strong> {{ restaurant.strasse }}</p>
-                    <p><strong>Postal Code:</strong> {{ restaurant.plz }}</p>
-                    <p><strong>Description:</strong> {{ restaurant.beschreibung }}</p>
-                    <p><strong>Open Time:</strong> {{ restaurant.openTime }}</p>
-                    <p><strong>Wallet Balance:</strong> €{{ restaurant.wallet }}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p class="no-restaurants">No restaurants found in your postal code.</p>
-    {% endif %}
 
+    <h2 style="color: #184122">GEÖFFNETE RESTAURANTS</h2>
+    <div class="grid-all">
+        {% for restaurant in restaurants %}
+
+        <div class="resto">
+            <div>
+                <img src="{{ url_for('static', filename='images/not-available.png') }} ">
+            </div>
+            <div>
+                <h2>{{ restaurant.name }}</h2>
+                <p >{{ restaurant.beschreibung }}</p>
+                <p><strong>Öffnungszeiten:</strong><br> {{ restaurant.openTime }}</p>
+            
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </body>
-</html>
+</html> 	
