@@ -94,16 +94,6 @@ def registerResto():
     return render_template("index.html")
 
 
-if __name__ == "__main__":
-    # Create all tables within the application context
-    with app.app_context():
-        db.create_all()
-        print(Kunde.query.all())
-        print(Resto.query.all())
-
-    print("Database tables created!")
-    app.run(debug=True)
-
   
 
     
