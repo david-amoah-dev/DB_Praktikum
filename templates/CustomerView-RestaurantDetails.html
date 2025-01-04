@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lieferspatz-restaurantLogin</title>
+    <link rel="icon" type="image/x-icon" href="images/Lieferspatz.svg">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<!-- Headerbar -->
+<header>
+    <div>
+        <p>
+        <a href="/">
+        <img style="width:50px;height:50px;" src="{{ url_for('static', filename='images/Lieferspatz.svg') }}" alt="Logo">
+        </a>
+        <a href="/">
+        <img src="{{ url_for('static', filename='images/LieferspatzSchrift.svg') }}" style="width:300px;height:50px;">
+        </a></p>
+        <hr>
+    </div>
+</header>
+
+<!-- Speisekarte -->
+
+<h1 class="head">Speisekarte</h1>
+<h3 id="C1" class="head">Menü</h3>
+
+<div class="card">
+    <img src="{{ url_for('static', filename='images/burgermenu.jpg')}}" style="width:100%">
+    <div class="container">
+        <h4>Basic Burger Menu</h4>
+        <p>Classic Burger with Fries and a softdrink</p>
+        <p><b>5,99€</b></p>
+        <button class="plusbtn" type="button">+</button>
+        <button class="minusbtn" type="button">-</button>
+    </div>
+</div>
+<!-- Sidebar mit Kategorien als Menüpunkte -->
+<div class="sidenav">
+    <nav>
+        <ul>
+            <a href="#C1">Menü</a>
+        </ul>
+    </nav>
+</div>
+
+
+<!-- Place Order -->
+<div>
+
+</div>
+
+<!-- footer -->
+<footer>
+
+</footer>
+
+</body>
+</html>

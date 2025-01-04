@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lieferspatz-restaurantLogin</title>
+    <link rel="icon" type="image/x-icon" href="images/Lieferspatz.svg">
+</head>
+<body>
+
+<header>
+    <div>
+        <p>
+        <a href="/">
+        <img style="width:50px;height:50px;" src="{{ url_for('static', filename='images/Lieferspatz.svg') }}" alt="Logo">
+        </a>
+        <a href="/">
+        <img src="{{ url_for('static', filename='images/LieferspatzSchrift.svg') }}" style="width:300px;height:50px;">
+        </a></p>
+        <hr>
+    </div>
+</header>
+
+<h1>This is the Customer Login Page</h1>
+
+<form>
+  <label for="fname">First name:</label><br>
+  <input type="text" id="fname" name="fname" ><br>
+  <label for="lname">Last name:</label><br>
+  <input type="text" id="lname" name="lname" ><br>
+  <label for="plz">PLZ:</label><br>
+  <input type="text" id="plz" name="plz"
+  ><br>
+  <label for="adress">Adresse:</label><br>
+  <input type="text" id="adress" name="adress"
+  ><br>
+  <label for="pwd">Password:</label><br>
+  <input type="password" id="pwd" name="pwd"
+  ><br>
+  <label for="pwd">confirm Password:</label><br>
+  <input type="password" id="pwd" name="pwd"
+  ><br>
+
+  <br>
+  <input type="submit" value="Submit">
+</form>
+
+</body>
+</html>

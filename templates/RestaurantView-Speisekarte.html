@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lieferspatz-restaurantLogin</title>
+    <link rel="icon" type="image/x-icon" href="images/Lieferspatz.svg">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+
+<!-- Headerbar -->
+<header>
+    <div>
+        <p>
+        <a href="/">
+        <img style="width:50px;height:50px;" src="{{ url_for('static', filename='images/Lieferspatz.svg') }}" alt="Logo">
+        </a>
+        <a href="/">
+        <img src="{{ url_for('static', filename='images/LieferspatzSchrift.svg') }}" style="width:300px;height:50px;">
+        </a></p>
+        <hr>
+    </div>
+</header>
+
+<!-- Speisekarte -->
+
+<h1 class="head">Speisekarte</h1>
+<h3 id="C1" class="head">Menü</h3>
+
+{% for x in items %}
+<div class="columnright">
+<div class="card">
+    <img src="{{ url_for('static', filename='images/burgermenu.jpg')}}" style="width:100%">
+    <div class="container">
+        <h4>{{x.itmname}}</h4>
+        <p>{{x.description}}</p>
+        <p><b>{{x.price}}</b></p>
+        <button class="editbtn" type="button" onclick=showUpdateItemD()>edit</button>
+        <a href="{{ url_for('delitm', mid=x.id) }}">delete</a>
+
+        <div class="horizontal-center">
+            <button id="tstbtn" class="addbtn" onclick=showCreateItemD()><b>+</b></button>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+<!-- Popup add new Item -->
+<dialog id="updateItem">
+        <h3> Update {{x.itmname}} </h3>
+        <form action="{{ url_for('upditm', updid=x.id) }}" method="post">
+            <input id="upitemname" name="upitemname" type="text" placeholder="{{x.itmname}}"}>Name</input><br><br>
+            <input id="updescription" name="updescription" type="text">Description</input><br><br>
+            <input id="upprice" name="upprice" type="number">Price</input><br><br>
+            <input type="image">Image</input><br><br>
+            <input id="upcategory" name="upcategory" type="text">Category</input><br><br>
+            <button type="submit" onclick=displayNewCard()>Submit</button>
+            <button type="button" onclick=closeUpdateItemD()>Cancel</button>
+        </form>
+</dialog>
+
+{% endfor %}
+
+<dialog id="createItem">
+        <h3> New Item </h3>
+        <form action="{{ url_for('itmadd') }}" method="post">
+            <input id="itemname" name="itemname" type="text">Name</input><br><br>
+            <input id="description" name="description" type="text">Description</input><br><br>
+            <input id="price" name="price" type="number">Price</input><br><br>
+            <input type="image">Image</input><br><br>
+            <input id="category" name="category" type="text">Category</input><br><br>
+            <button type="submit" onclick=displayNewCard()>Submit</button>
+            <button type="button" onclick=closeCreateItemD()>Cancel</button>
+        </form>
+</dialog>
+
+<!-- Sidebar mit Kategorien als Menüpunkte
+ (Will need jinja for loop for categories with menu as default value on top) -->
+<div class="sidenav column">
+    <a href="#C1">Menü</a>
+</div>
+
+
+<script>
+const dialog = document.getElementById("createItem")
+const updialog = document.getElementById("updateItem")
+
+function showCreateItemD() {
+    dialog.showModal()
+}
+function closeCreateItemD() {
+    dialog.close()
+}
+
+function showUpdateItemD(x) {
+    updialog.showModal()
+}
+function closeUpdateItemD() {
+    updialog.close()
+}
+
+</script>
+
+<!-- footer -->
+<footer>
+
+</footer>
+
+</body>
+</html>
