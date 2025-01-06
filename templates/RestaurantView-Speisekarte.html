@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<!-- Headerbar -->
+<!--  ___________________________________________________________________Headerbar_____________________________________________________________________  -->
 <header>
     <div>
         <p>
@@ -23,7 +23,7 @@
     </div>
 </header>
 
-<!-- Speisekarte -->
+<!-- _____________________________________________________________________Speisekarte____________________________________________________________________ -->
 
 <h1 class="head">Speisekarte</h1>
 <h3 id="C1" class="head">Menü</h3>
@@ -48,7 +48,7 @@
 </div>
 
 
-<!-- Popup add new Item -->
+<!-- __________________________________Popup update Item____________________________________________________ -->
 <dialog id="updateItem">
         <h3> Update {{x.itmname}} </h3>
         <form action="{{ url_for('upditm', updid=x.id) }}" method="post">
@@ -64,6 +64,7 @@
 
 {% endfor %}
 
+<!-- __________________________________Popup add new Item___________________________________________________ -->
 <dialog id="createItem">
         <h3> New Item </h3>
         <form action="{{ url_for('itmadd') }}" method="post">
@@ -77,13 +78,12 @@
         </form>
 </dialog>
 
-<!-- Sidebar mit Kategorien als Menüpunkte
- (Will need jinja for loop for categories with menu as default value on top) -->
+<!-- ______________Sidebar mit Kategorien als Menüpunkte (Will need jinja for loop for categories with menu as default value on top)_____________________ -->
 <div class="sidenav column">
     <a href="#C1">Menü</a>
 </div>
 
-
+<!-- ___________________________________________________________________Temporal JavaScript______________________________________________________________ -->
 <script>
 const dialog = document.getElementById("createItem")
 const updialog = document.getElementById("updateItem")

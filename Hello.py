@@ -8,14 +8,14 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
-#create the app-------------------------------------------------------------------------------------
+# _______________________________________________________________________create the app____________________________________________________________________
 app = Flask(__name__, template_folder="templates")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
 app.secret_key = "idk just some secret key i guess"
 
-#db Models bzw Tables-------------------------------------------------------------------------------
+#_________________________________________________________________________db Models bzw_____________________________________________________________________
 class Resto(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(20), unique = False, nullable = False)
@@ -55,12 +55,12 @@ class Order(db.Model):
     comment = db.Column(db.String(200), unique = False, nullable = False)
     # ammountOfItem = db.Column(db.Integer(), nullable = False)
 
-# Page routes----------------------------------------------------------------------------------
+# ______________________________________________________________________Page routes______________________________________________________________________
 @app.route("/")
 def homepage():
      return render_template('Welcomepage.html')
 
-# Customer Pages----------------------------------------------
+# ____________________________________________Customer Pages_______________________________________
 @app.route("/cstmlogin")
 def cstmlogin():
     return render_template('CustomerView-Login.html')
@@ -83,10 +83,11 @@ def cstmbsth():
 
 @app.route("/cstmrstdtl")
 def cstmrstdtl():
-    return render_template('CustomerView-RestaurantDetails.html')
+    items = db.session.execute(db.select(Item)).scalars()
+    return render_template('CustomerView-RestaurantDetails.html', items=items)
 
 
-# Restaurant Pages-------------------------------------------------
+# ___________________________________________Restaurant Pages_____________________________________
 @app.route("/rstrlogin")
 def rstrlogin():
     return render_template('RestaurantView-Login.html')
@@ -109,7 +110,9 @@ def item_list():
     items = db.session.execute(db.select(Item)).scalars()
     return render_template('itemlist.html', items=items)
 
-## functional app routes------------------------------------------
+## __________________________________________functional app routes_______________________________
+
+# ______________add an item by id_____________
 @app.route("/itmadd", methods = ['POST'])
 def itmadd():
     if request.method == "POST":
@@ -125,6 +128,7 @@ def itmadd():
         db.session.commit()
     return redirect(url_for("rstrspkt"))
 
+# _____________delete an item by id______________
 @app.route("/delitm/<int:mid>", methods = ['GET','POST'])
 def delitm(mid):
     item = db.session.execute(db.select(Item).filter_by(id = mid)).scalar_one()
@@ -132,6 +136,7 @@ def delitm(mid):
     db.session.commit()
     return redirect(url_for("rstrspkt"))
 
+# __________update an item by id - not fully functional yet___________
 @app.route("/upditm/<int:updid>", methods = ['GET','POST'])
 def upditm(updid):
     item = db.session.execute(db.select(Item).filter_by(id = updid)).scalar_one()
@@ -146,7 +151,8 @@ def upditm(updid):
         db.session.commit()
     return redirect(url_for("rstrspkt"))
 
-@app.route("/itmadd", methods = ['POST'])
+# __________________add an order bzw. place order______________________
+@app.route("/ordradd", methods = ['POST'])
 def ordradd():
     if request.method == "POST":
         itmname = request.form.get("itemname")

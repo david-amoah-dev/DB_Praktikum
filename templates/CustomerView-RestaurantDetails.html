@@ -27,17 +27,39 @@
 
 <h1 class="head">Speisekarte</h1>
 <h3 id="C1" class="head">Menü</h3>
-
+{% for x in items %}
 <div class="card">
     <img src="{{ url_for('static', filename='images/burgermenu.jpg')}}" style="width:100%">
     <div class="container">
-        <h4>Basic Burger Menu</h4>
-        <p>Classic Burger with Fries and a softdrink</p>
-        <p><b>5,99€</b></p>
-        <button class="plusbtn" type="button">+</button>
-        <button class="minusbtn" type="button">-</button>
+        <h4>{{x.itmname}}</h4>
+        <p>{{x.description}}</p>
+        <p><b>{{x.price}}</b></p>
+        <button class="plusbtn" type="button" onclick=increaseAmount({{x.id}})>+</button>
+        <button class="minusbtn" type="button" onclick=decreaseAmount({{x.id}})>-</button>
+        <p>Ammount:</p><p  id="{{x.id}}" >0</p>
     </div>
 </div>
+
+{% endfor %}
+<script>
+
+    function increaseAmount(amount){
+        const y = document.getElementById(amount);
+        let num = parseInt(y.innerHTML);
+        num += 1;
+        y.innerHTML = num;
+    }
+
+    function decreaseAmount(amount){
+        const y = document.getElementById(amount);
+        let num = parseInt(y.innerHTML);
+        if (num > 0) {
+            num -= 1;
+            y.innerHTML = num;
+        }
+    }
+</script>
+
 <!-- Sidebar mit Kategorien als Menüpunkte -->
 <div class="sidenav">
     <nav>
@@ -52,6 +74,8 @@
 <div>
 
 </div>
+
+
 
 <!-- footer -->
 <footer>
