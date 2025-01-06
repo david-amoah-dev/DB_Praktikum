@@ -1,20 +1,13 @@
 <!DOCTYPE html>
-<<<<<<< Updated upstream
-<head>
-    <title>
-        Profile
-    </title>
-</head>
-=======
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-</head>
-<style>
-    .Profile {
-        display: block;
+
+    <style>
+        .Profile {
+            display: block;
             position: fixed;
             transform: translate(-50%, -50%);
             background-color: white;
@@ -29,48 +22,113 @@
             align-items: flex-start;
             flex-shrink: 0;
             background:#E98758;
-    }
+        }
 
-</style>
->>>>>>> Stashed changes
+        .form-popup {
+            display: none;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            max-height: 500px;
+            border-radius: 10px;
+            top: 50%;
+            left: 50%;
+            padding: 25px 75px 50px 75px;
+            flex-direction: column;
+            align-items: flex-start;
+            flex-shrink: 0;
+            background: #FFF;
+        }
+
+        .register {
+            background-color: #E98758;
+            color:#025252;
+            padding: 10px;
+            align-items: center;
+            display: justify;
+            border-radius: 15px;
+            font-family: "Istok Web";
+            font-size: 100%;
+            opacity: 0.9;
+        }
+
+        .register:hover {
+            opacity: 1;
+            background-color: #E98758;
+        }
+
+        .form-container .btn {
+            background-color: #025252;
+            color: #E98758;
+            padding: 15px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            opacity: 0.9;
+            align-items: center;
+            display: justify;
+            border-radius: 40px;
+            margin-bottom: -10px;
+            font-family: "Istok Web";
+            font-size: 120%;
+        }
+
+    </style>
+</head>
 <body>
-    <a href="/">
-        Homepage
-    </a>
-<<<<<<< Updated upstream
-    <h1>
-        Profile
-    </h1>
-    {% for x in content %}
-        <p>
-            {{x}}
-        </p>
-    {% endfor %}
-    <a href="/profile/update">
-        Update
-    </a>
-    <a href="/logout">
-        Logout
-    </a>
-</body>
-=======
     <div class="Profile">
         <h1>
             Profile
         </h1>
-        {% for x in content %}
-            <p class="Item">
-                {{x}}
-            </p>
-        {% endfor %}
-        <a href="/profile/update">
-            Update
-        </a>
+        {% if userType == "Kunde" %}
+            <p>{{content.vorname}}</p>
+            <p>{{content.nachname}}</p>
+            <p>{{content.adresse}}</p>
+            <p>{{content.postleitzahl}}</p>
+            <p>{{content.password}}</p>
+        {% else %}
+            <p>{{content.name}}</p>
+            <p>{{content.strasse}}</p>
+            <p>{{content.plz}}</p>
+            <p>{{content.beschreibung}}</p>
+            <p>{{content.password}}</p>
+            <p>{{content.openTime}}</p>
+        {% endif %}
+
+
+
+            <!-- Button to open the user registration form -->
+        <button class="btn register" onclick="openForm('profileUpdateForm')"><b>Update your Stuff</b></button>
     </div>
-    <a href="/logout">
-        Logout
-    </a>
+
+    <!--  Form -->
+    <div class="form-popup" id="profileUpdateForm">
+        <form action="{{ url_for('profile_update') }}" class="form-container" method="post">
+            <h1>Update Stuff</h1>
+            <label for="vorname"><b>Vorname</b></label>
+            <input type="text" placeholder="Vorname" name="vorname" required>
+
+            <label for="nachname"><b>Nachname</b></label>
+            <input type="text" placeholder="Nachname" name="nachname" required>
+
+            <label for="adresse"><b>Adresse</b></label>
+            <input type="text" placeholder="Adresse" name="adresse" required>
+
+            <label for="postleitzahl"><b>Postleitzahl</b></label>
+            <input type="number" placeholder="Postleitzahl" name="postleitzahl" required>
+
+            <label for="password"><b>Passwort</b></label>
+            <input type="password" placeholder="Passwort" name="password" required>
+
+            <button type="submit" class="btn" onclick="closeForm('profileUpdateForm')"><b>Update</b></button>
+            <button type="button" class="btn cancel" onclick="closeForm('profileUpdateForm')"><b>Close</b></button>
+        </form>
+    </div>
+    
+    <script src= "{{ url_for('static', filename='profile_update.js') }}"></script>
     
 </body>
 </html>
->>>>>>> Stashed changes
