@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #E98758;
+            color: #025252;
+            padding: 15px;
+            text-align: center;
+        }
+        .order-list {
+            padding: 20px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .order-item:last-child {
+            margin-bottom: 0;
+        }
+        .order-item .item-name {
+            font-weight: bold;
+        }
+        .order-item .item-price {
+            color: #555;
+            background: white;
+        }
+        .summary {
+            border-top: 1px solid #eee;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+        }
+        .summary .total {
+            font-weight: bold;
+        }
+        .confirm-btn {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 20px auto;
+            padding: 15px;
+            background: #E98758;
+            color: #025252;
+            text-align: center;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        .confirm-btn:hover {
+            background: #e65a00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Bestellzusammenfassung</h1>
+        </div>
+        <div class="order-list">
+            {% for item in content %}
+            <div class="order-item">
+                <span class="item-name">{{item.name}}</span>
+                <span class="item-price">{{item.price}}</span>
+                <span class="item-amount">{{item.amount}}</span>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="summary">
+            <span>Gesamt</span>
+            <span class="total">{{total}} €</span>
+        </div>
+        <a href="#" class="confirm-btn">Bestellung abschließen</a>
+    </div>
+</body>
+</html>

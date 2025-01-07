@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #E98758;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #025252;
+            border-radius: 4px;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .edit-btn {
+            background-color: #025252;
+            color: white;
+        }
+        .save-btn {
+            background-color: #025252;
+            color: white;
+        }
+        .cancel-btn {
+            background-color: #025252;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Profile Page</h1>
+        {% if user1.type == "Kunde" %}
+        <form id="profileForm" action="{{ url_for('profile_alternative') }}" class="form-container" method="POST">
+            <div class="form-group">
+                <label for="Vorname">Vorname:</label>
+                <input type="text" id="vorname" name="vorname" value="{{content.vorname}}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="Nachname">Nachname:</label>
+                <input type="text" id="nachname" name="nachname" value="{{content.nachname}}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="Adresse">Adresse:</label>
+                <input type="text" id="adresse" name="adresse" value="{{content.adresse}}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="postleitzahl">PLZ:</label>
+                <input type="number" id="postleitzahl" name="postleitzahl" value="{{content.postleitzahl}}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="password">Passwort:</label>
+                <input type="password" id="password" name="password" value="{{content.password}}" disabled>
+            </div>
+            <div class="buttons">
+                <button type="button" class="edit-btn" id="editBtn">Edit</button>
+                <button type="submit" class="save-btn" id="saveBtn" style="display: none;"><b>Save</b></button>
+                <button type="button" class="cancel-btn" id="cancelBtn" style="display: none;">Cancel</button>
+            </div>
+        </form>
+        {% else %}
+        <form id="profileForm" action="{{ url_for('profile_alternative') }}" class="form-container" method="POST">
+            <div class="form-group">
+                <label for="Name">Name:</label>
+                <input type="text" id="name" name="name" value="{{content.name}}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="Strasse">Strasse:</label>
+                <input type="text" id="strasse" name="strasse" value="{{content.strasse}}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="PLZ">PLZ:</label>
+                <input type="number" id="plz" name="plz" value="{{content.plz}}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="beschreibung">Beschreibung:</label>
+                <textarea id="beschreibung" name="beschreibung" disabled>{{content.beschreibung}}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="password">Passwort:</label>
+                <input type="password" id="password" name="password" value="{{content.password}}" disabled>
+            </div>
+            <div>
+                <label for="openTime">OpenTime</label>
+                <input type="text" id="openTime" name="openTime" value="{{content.openTime}}" disabled>
+            </div>
+            <div class="buttons">
+                <button type="button" class="edit-btn" id="editBtn">Edit</button>
+                <button type="submit" class="save-btn" id="saveBtn" style="display: none;"><b>Save</b></button>
+                <button type="button" class="cancel-btn" id="cancelBtn" style="display: none;">Cancel</button>
+            </div>
+        </form>
+        {% endif %}
+    </div>
+
+    <script>
+        const editBtn = document.getElementById('editBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const inputs = document.querySelectorAll('#profileForm input, #profileForm textarea');
+
+        editBtn.addEventListener('click', () => {
+            inputs.forEach(input => input.disabled = false);
+            editBtn.style.display = 'none';
+            saveBtn.style.display = 'inline-block';
+            cancelBtn.style.display = 'inline-block';
+        });
+
+        cancelBtn.addEventListener('click', () => {
+            inputs.forEach(input => input.disabled = true);
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+        });
+
+        saveBtn.addEventListener('click', () => {
+            inputs.forEach(input => input.disabled = true);
+            editBtn.style.display = 'inline-block';
+            saveBtn.style.display = 'none';
+            cancelBtn.style.display = 'none';
+
+            // Optionally, you could save the data here, e.g., send it to a server
+            alert('Profile updated successfully!');
+        });
+    </script>
+</body>
+</html>
