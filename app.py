@@ -10,7 +10,7 @@ db = SQLAlchemy(model_class=Base)
 # create the app
 app = Flask(__name__)
 # configure the SQLite database, relative to the app instance folder
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///sagharDB.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 app.config['STATIC_FOLDER'] = 'static'
 app.secret_key = 'supersecretkey'  # This is just an example, do not use simple keys like this in production
 
