@@ -12,7 +12,7 @@ db = SQLAlchemy(model_class=Base)
 # create the app
 app = Flask(__name__, template_folder="templates")
 # configure the SQLite database, relative to the app instance folder
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project1.db"
 # initialize the app with the extension
 db.init_app(app)
 # Tables
