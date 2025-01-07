@@ -36,6 +36,7 @@ class Kunde(db.Model):
     wallet = db.Column(db.Integer, nullable=False, default=100)
 
 class Orders(db.Model):
+    # Zeit ohne Millisekunden
     time = db.Column(DateTime, default=lambda: datetime.now().replace(microsecond=0))
     id = db.Column(db.Integer, primary_key=True)
     lieferstatus = db.Column(db.String(50), nullable=False, default = "in Bearbeitung")
@@ -130,7 +131,7 @@ def add_order():
         db.session.commit()
 
         return redirect(url_for('bestellansicht'))
- # dynamic Buttons   
+
  # edit redirecting!!
 @app.route('/order/<int:order_id>/decline', methods=['POST'])
 def decline_order(order_id):
@@ -159,3 +160,6 @@ if __name__ == "__main__":
         db.create_all()
 
     app.run(debug=True)
+
+
+## Items von David und login, bestellung von Simon
