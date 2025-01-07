@@ -50,7 +50,6 @@ class Orders(db.Model):
 
 @app.route('/', methods =["GET", "POST"])
 def bestellansicht():
-
     orders = Orders.query.order_by(
         # numbers to group orders by priority, time.desc() to sort by decending time after being grouped by their status
         db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2},value=Orders.lieferstatus),Orders.time.desc()).all()
