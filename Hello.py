@@ -53,7 +53,7 @@ class Order(db.Model):
     # customer = db.Column()
     # datetime = db.Column()
     comment = db.Column(db.String(200), unique = False, nullable = False)
-    # ammountOfItem = db.Column(db.Integer(), nullable = False)
+    ammountOfItem = db.Column(db.Integer(), unique = False, nullable = False)
 
 # ______________________________________________________________________Page routes______________________________________________________________________
 @app.route("/")
