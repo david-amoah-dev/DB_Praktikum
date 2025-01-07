@@ -1,4 +1,4 @@
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 
@@ -11,6 +11,9 @@ db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
 # configure the SQLite database, relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+app.config['STATIC_FOLDER'] = 'static'
+app.secret_key = 'supersecretkey'  # This is just an example, do not use simple keys like this in production
+
 # initialize the app with the extension
 db.init_app(app)
 
@@ -45,12 +48,11 @@ class Kunde(db.Model):
 with app.app_context():
   db.create_all()
 
+@app.route('/registeringPage', methods=["GET"])
+def registeringPage():
+    return render_template("register.html")
 
 
-@app.route('/', methods =["GET", "POST"])
-def homepage():
-    return render_template('index.html')
-# pop up request
 @app.route('/registerKunde', methods=["POST"])
 def registerKunde():
     if request.method == "POST":
@@ -69,7 +71,7 @@ def registerKunde():
         print(f"Received: {vorname}, {nachname}, {adresse}, {postleitzahl}, {password}")
         db.session.add(new_user)
         db.session.commit()
-    return render_template("dog.html")
+    return render_template("restaurants.html")
 
 @app.route('/registerResto', methods=["POST"])
 def registerResto():
@@ -91,18 +93,42 @@ def registerResto():
         print(f"Received: {name}, {strasse}, {plz}, {beschreibung}, {password}, {openTime}")
         db.session.add(new_resto)
         db.session.commit()
-    return render_template("index.html")
+    return render_template("restaurants.html")
 
 
-  
 
+@app.route('/', methods =["GET", "POST"])
+def homepage():
+    return redirect(url_for('login'))
+
+
+@app.route('/login', methods=["POST", "GET"])
+def login():
+    if request.method== "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        print(f"Received username: {username}, password: {password}") #debugging
+    
+        kunde = Kunde.query.filter_by(nachname=username).first()
+
+        if kunde and kunde.password == password:
+            print("password is right")#debugging
+            session['username'] = kunde.nachname
+            session['plz'] = kunde.postleitzahl
+            session['id'] = kunde.id
+
+            return redirect(url_for('CatchResto'))#showa the restaurants if any available
+        else:
+            return render_template('loginsaghar.html')
     
     
-@app.route('/', methods=['GET'])
+    return render_template('loginsaghar.html')
+
+    
+@app.route('/restaurants', methods=["GET"])
 def CatchResto():
     #catch the PLZ from session(for now the static version)
-    kunde_postleitzahl= 12345
-   
+    kunde_postleitzahl = session.get('plz')
 
     #catch the restaurant with the same PLZ
     restaurants= Resto.query.filter_by(plz=kunde_postleitzahl).all()

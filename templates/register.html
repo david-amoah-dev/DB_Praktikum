@@ -5,13 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restaurant & User Registration</title>
     <style>
+        body{
+            background-color: #f4f6f9;
+
+        }
         /* General popup form style */
         .form-popup {
             display: none;
             position: fixed;
             transform: translate(-50%, -50%);
             background-color: white;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             max-width: 300px;
             max-height: 500px;
             border-radius: 10px;
@@ -28,7 +32,7 @@
             position: fixed;
             transform: translate(-50%, -50%);
             background-color: white;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
             max-width: 300px;
             height: 600px;
             border-radius: 10px;
@@ -119,8 +123,8 @@
 
     <!-- User Registration Form -->
     <div class="form-popup" id="userForm">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="User Icon">
-        <form action="{{ url_for('registerKunde') }}" class="form-container" method="post">
+        <img alt="logo" src="{{ url_for('static', filename='images/LP.png') }} ">
+        <form action="{{ url_for('registerKunde') }}" class="form-container" method="POST">
             <h1>Benutzer registrieren</h1>
             <label for="vorname"><b>Vorname</b></label>
             <input type="text" placeholder="Vorname" name="vorname" required>
@@ -144,8 +148,8 @@
 
     <!-- Restaurant Registration Form -->
     <div class="form-popup2" id="restaurantForm">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Restaurant Icon">
-        <form action="{{ url_for('registerResto') }}" class="form-container" method="post">
+        <img src="{{ url_for('static', filename='images/LP.png') }}" alt="Restaurant Icon">
+        <form action="{{ url_for('registerResto') }}" class="form-container" method="POST">
             <h1>Restaurant registrieren</h1>
             <label for="name"><b>Name</b></label>
             <input type="text" placeholder="Restaurant Name" name="name" required>
@@ -170,7 +174,9 @@
         </form>
     </div>
 
-  <script src= "{{ url_for('static', filename='login_popup.js') }}"></script>
+    <script src=" {{url_for('static', filename= 'login_popup.js')}}">
+        
+    </script>
 
 </body>
 </html>
