@@ -83,7 +83,8 @@ def cstmbsth():
 
 @app.route("/cstmrstdtl")
 def cstmrstdtl():
-    return render_template('CustomerView-RestaurantDetails.html')
+    items = db.session.execute(db.select(Item)).scalars()
+    return render_template('CustomerView-RestaurantDetails.html', items=items)
 
 
 # Restaurant Pages-------------------------------------------------
@@ -172,7 +173,7 @@ def index():
 
 # todo delete this
 @app.route("/homepage/")
-def homepage():
+def homepagesim():
     if not "user" in session:
         return render_template("index_old.html")
     user = session["user"]
