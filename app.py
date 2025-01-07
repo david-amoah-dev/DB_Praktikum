@@ -114,7 +114,6 @@ def profile():
     return render_template("profile.html", content=user2, userType = user1["type"])
     # todo update in profile html to deal with kunde type
     
-    
 @app.route("/profile/update/", methods=["POST", "GET"])
 def profile_update():
     user = session["user"]
