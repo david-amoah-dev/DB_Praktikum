@@ -71,7 +71,7 @@
     <div class="container">
         <h1>Profile Page</h1>
         {% if user1.type == "Kunde" %}
-        <form id="profileForm" action="{{ url_for('profile_alternative') }}" class="form-container" method="POST">
+        <form id="profileForm" action="{{ url_for('profile_alternative') }}" class="form-container" method="post">
             <div class="form-group">
                 <label for="Vorname">Vorname:</label>
                 <input type="text" id="vorname" name="vorname" value="{{content.vorname}}" disabled>

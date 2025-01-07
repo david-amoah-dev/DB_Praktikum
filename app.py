@@ -105,28 +105,35 @@ def profile():
     print(user1)
     user2 = None
     if user1["type"] == "Kunde":
-        for kunde in db.session.query(Kunde).filter_by(id = user1["id"]):
-            user2 = getattr(kunde, "name")
+        user = Kunde.query.get_or_404(user1["id"])
     else:
-        for resto in db.session.query(Resto).filter_by(id = user1["id"]):
-            user2 = getattr(resto, "name")
-    print(user2)
-    return render_template("profile.html", content=user2, userType = user1["type"])
-    # todo update in profile html to deal with kunde type
+        user = Resto.query.get_or_404(user1["id"])
+    return render_template("profile.html", content=user, userType = user1["type"])
     
 @app.route("/profile/update/", methods=["POST", "GET"])
 def profile_update():
     user = session["user"]
     if user["type"] == "Kunde":
         if request.method == "POST":
-            name = request.form.get("name")
-            strasse = request.form.get("strasse")
-            plz = request.form.get("plz")
-            beschreibung = request.form.get("beschreibung")
+
+            vorname = request.form.get("vorname")
+            nachname = request.form.get("nachname")
+            adresse = request.form.get("adresse")
+            postleitzahl = request.form.get("postleitzahl")
             password = request.form.get("password")
-            
+
+            user = Kunde.query.get_or_404(user["id"])
+
+            user.vorname = vorname
+            user.nachname = nachname
+            user.adresse = adresse
+            user.postleitzahl = postleitzahl
+            user.password = password
+
+            db.session.commit()
     else: 
         if request.method == "POST":
+
             name = request.form.get("name")
             strasse = request.form.get("strasse")
             plz = request.form.get("plz")
@@ -134,8 +141,17 @@ def profile_update():
             password = request.form.get("password")
             openTime = request.form.get("openTime")
 
-        # update user
+            user = Resto.query.get_or_404(user["id"])
+            
+            user.name = name
+            user.strasse = strasse
+            user.plz = plz
+            user.beschreibung = beschreibung
+            user.password = password
+            user.openTime = openTime
 
+            db.session.commit()
+    
     return redirect(url_for("profile"))
 
     
@@ -175,7 +191,7 @@ def homepage():
 def summary():
     if not "user" in session:
         return redirect(url_for("login"))
-    # only test
+    # to do change to get items from session
     item1 = {"name" : "Name1", "description" : "Text1", "price" : 1.20, "amount" : 5}
     item2 = {"name" : "Name2", "description" : "Text2", "price" : 2.20, "amount" : 4}
     item3 = {"name" : "Name3", "description" : "Text3", "price" : 3.20, "amount" : 3}
@@ -190,6 +206,7 @@ def summary():
     final = f"{total:.2f}"
     return render_template("summary.html", content = items, total = final)
 
+# to do delete this
 @app.route("/profile_alternative/", methods=["GET", "POST"])
 def profile_alternative():
     if not "user" in session:
@@ -218,20 +235,23 @@ def profile_alternative():
         return render_template("profile_alternative.html", content = content, user1 = user1)
     elif request.method == "POST":
         if user1["type"] == "Kunde":
-            for user2 in db.session.query(Kunde).filter_by(id = user1["id"]):
-                print(user2)
-                if request.form.get("vorname"):
-                    user2.vorname = request.form.get("vorname")
-                if request.form.get("nachname"):
-                    user2.nachname = request.form.get("nachname")
-                if request.form.get("adresse"):
-                    user2.adresse = request.form.get("adresse")
-                if request.form.get("postleitzahl"):
-                    user2.postleitzahl = request.form.get("postleitzahl")
-                if request.form.get("password"):
-                    user2.password = request.form.get("password")
-                db.session.commit()
-                return redirect(url_for("profile_alternative"))
+            user = Kunde.query.get_or_404(user1["id"])
+            vorname = request.form.get("vorname")
+            if vorname:
+                user.vorname = vorname
+            if request.form.get("nachname"):
+                user.nachname = request.form.get("nachname")
+            if request.form.get("adresse"):
+                user.adresse = request.form.get("adresse")
+            if request.form.get("postleitzahl"):
+                user.postleitzahl = request.form.get("postleitzahl")
+            if request.form.get("password"):
+                user.password = request.form.get("password")
+            print(vorname)
+            print(user.vorname)
+            print(user)
+            db.session.commit()
+            return redirect(url_for("profile_alternative"))
         else:
             name = request.form.get("name")
             strasse = request.form.get("strasse")
