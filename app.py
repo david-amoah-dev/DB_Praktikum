@@ -166,7 +166,7 @@ def ordradd():
 @app.route("/home")
 def index():
     if not session.get("user"):
-        return render_template("index.html")
+        return render_template("home.html")
     user = session["user"]
     return redirect(url_for("homepage"))
         # Homepage Restaurantübersicht
@@ -181,7 +181,7 @@ def homepagesim():
 
 # ______________________reigister / logins________________
 # pop up request
-@app.route("/registerKunde", methods=["POST"])
+@app.route("/registerKunde", methods=["GET","POST"])
 def registerKunde():
     if request.method == "POST":
         vorname = request.form.get("vorname")
@@ -203,9 +203,9 @@ def registerKunde():
         id = 1
         user = {"id": id, "type": "Kunde"}
         session["user"] = user
-    return render_template("index.html")
+    return render_template("Welcomepage.html")
 
-@app.route("/registerResto", methods=["POST"])
+@app.route("/registerResto", methods=["GET","POST"])
 def registerResto():
     if request.method == "POST":
         name = request.form.get("name")
@@ -229,7 +229,7 @@ def registerResto():
         id = 1
         user = {"id": id, "type": "Resto"}
         session["user"] = user
-    return render_template("index.html")
+    return render_template("Welcomepage.html")
 
 # delete this
 @app.route("/login/", methods=["POST", "GET"])

@@ -1,5 +1,30 @@
 //This is going to be the main JavaScript files
 
+/* ________________________________________________________profile update.js Copy_______________________________________________________________*/
+    const profileUpdateForm = document.getElementById('profileUpdateForm');
+
+function openprofileForm() {
+    // Show the selected form
+    profileUpdateForm.showModal();
+}
+// Function to close the form dynamically based on the form ID
+function closeprofileForm() {
+    selectedForm.close();
+
+/* _______________________________________________________login-popup.js Copy________________________________________________________________*/
+    // Hide both forms initially
+    const userForm = document.getElementById('userForm');
+    const restaurantForm = document.getElementById('restaurantForm');
+
+function openuserForm() {
+    // Show the selected form
+    userForm.showModal();
+}
+// Function to close the form dynamically based on the form ID
+function closeuserForm() {
+    userForm.close();
+}
+
 /* JavaScript Objects
 
     Customer

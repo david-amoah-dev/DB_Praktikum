@@ -10,7 +10,7 @@
     
 
 <!-- Button to open popup form-->
- <button class="btn register" onclick="openForm()"><b>click to register</b></button>
+ <button class="btn register" onclick="openuserForm()"><b>click to register</b></button>
 
  <!-- the form-->
   <div class="form-popup" id="myForm">
@@ -36,9 +36,9 @@
         <input type="text" placeholder="open Time" name="openTime" required>
 
         <button type="submit" class="btn"><b>Register</b></button>
-        <button type="button" class="btn cancel" onclick="closeForm()"><b>Close</b></button>
+        <button type="button" class="btn cancel" onclick="closeuserForm()"><b>Close</b></button>
     </form>
   </div>
-  <script src= "{{ url_for('static', filename='login_popup.js') }}"></script>
+  <script src= "{{ url_for('static', filename='lspatz.js') }}"></script>
 </body>
 </html>

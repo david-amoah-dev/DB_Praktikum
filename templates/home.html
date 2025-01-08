@@ -8,10 +8,10 @@
 </head>
 <body>
     <!-- Button to open the user registration form -->
-    <button class="btn register" onclick="openForm('userForm')"><b>Kunden registrieren</b></button>
+    <button class="btn register" onclick="openuserForm('userForm')"><b>Kunden registrieren</b></button>
 
     <!-- Button to open the restaurant registration form -->
-    <button class="btn register" onclick="openForm('restaurantForm')"><b>Restaurant registrieren</b></button>
+    <button class="btn register" onclick="openuserForm('restaurantForm')"><b>Restaurant registrieren</b></button>
 
     <!-- User Registration Form -->
     <div class="form-popup" id="userForm">
@@ -34,7 +34,7 @@
             <input type="password" placeholder="Passwort" name="password" required>
 
             <button type="submit" class="btn"><b>registrieren</b></button>
-            <button type="button" class="btn cancel" onclick="closeForm('userForm')"><b>schließen</b></button>
+            <button type="button" class="btn cancel" onclick="closeuserForm('userForm')"><b>schließen</b></button>
         </form>
     </div>
 
@@ -62,11 +62,11 @@
             <input type="text" placeholder="Öffnungszeit" name="openTime" required>
 
             <button type="submit" class="btn"><b>registrieren</b></button>
-            <button type="button" class="btn cancel" onclick="closeForm('restaurantForm')"><b>schließen</b></button>
+            <button type="button" class="btn cancel" onclick="closeuserForm('restaurantForm')"><b>schließen</b></button>
         </form>
     </div>
 
-  <script src= "{{ url_for('static', filename='login_popup.js') }}"></script>
+  <script src= "{{ url_for('static', filename='lspatz.js') }}"></script>
 
 </body>
 </html>

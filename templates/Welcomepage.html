@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lieferspatz-restaurantLogin</title>
     <link rel="icon" type="image/x-icon" href="images/Lieferspatz.svg">
-</head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='addstyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='lspatz.js') }}">
+    </head>
 <body>
 
 <header>
@@ -22,7 +24,6 @@
 </header>
 
 <h1>This is a Heading</h1>
-<p>This is a paragraph.</p>
 
 <h3>Customer Pages</h3>
 <div>
@@ -35,6 +36,8 @@
     <a href="cstmwaren">Warenkorb</a>
     <br>
     <a href="cstmbsth">Bestellhistorie</a>
+    <br>
+    <a href="cstmrstdtl">RestaurantDetails</a>
 </div>
 
 <h3>Restaurant Pages</h3>
@@ -47,6 +50,82 @@
     <br>
     <a href="rstrbstlh">Bestellhistorie</a>
 </div>
+
+<!-- ________________________new Code_______________________ -->
+
+    <!-- Button to open the user registration form -->
+    <button class="btn register" onclick="openuserForm()"><b>Kunden registrieren</b></button>
+
+    <!-- Button to open the restaurant registration form -->
+    <button class="btn register" onclick="openuserForm()"><b>Restaurant registrieren</b></button>
+
+    <!-- User Registration Form -->
+    <dialog id="userForm">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="User Icon">
+        <form action="{{ url_for('registerKunde') }}" class="form-container" method="post">
+            <h1>Benutzer registrieren</h1>
+            <label for="vorname"><b>Vorname</b></label>
+            <input type="text" placeholder="Vorname" name="vorname" required>
+
+            <label for="nachname"><b>Nachname</b></label>
+            <input type="text" placeholder="Nachname" name="nachname" required>
+
+            <label for="adresse"><b>Adresse</b></label>
+            <input type="text" placeholder="Adresse" name="adresse" required>
+
+            <label for="postleitzahl"><b>Postleitzahl</b></label>
+            <input type="number" placeholder="Postleitzahl" name="postleitzahl" required>
+
+            <label for="password"><b>Passwort</b></label>
+            <input type="password" placeholder="Passwort" name="password" required>
+
+            <button type="submit" class="btn"><b>registrieren</b></button>
+            <button type="button" class="btn cancel" onclick="closeuserForm()"><b>schließen</b></button>
+        </form>
+    </dialog>
+
+   <!-- Restaurant Registration Form -->
+    <dialog id="restaurantForm">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Restaurant Icon">
+        <form action="{{ url_for('registerResto') }}" class="form-container" method="post">
+            <h1>Restaurant registrieren</h1>
+            <label for="name"><b>Name</b></label>
+            <input type="text" placeholder="Restaurant Name" name="name" required>
+
+            <label for="strasse"><b>Strasse</b></label>
+            <input type="text" placeholder="Strasse" name="strasse" required>
+
+            <label for="plz"><b>Postleitzahl</b></label>
+            <input type="text" placeholder="Postleitzahl" name="plz" required>
+
+            <label for="Beschreibung"><b>Beschreibung</b></label>
+            <input type="text" placeholder="Beschreibung" name="beschreibung" required>
+
+            <label for="password"><b>Passwort</b></label>
+            <input type="password" placeholder="Passwort" name="password" required>
+
+            <label for="openTime"><b>Öffnungszeit</b></label>
+            <input type="text" placeholder="Öffnungszeit" name="openTime" required>
+
+            <button type="submit" class="btn"><b>registrieren</b></button>
+            <button type="button" class="btn cancel" onclick="closeuserForm()"><b>schließen</b></button>
+        </form>
+    </dialog>
+
+    <script>
+        const userForm = document.getElementById('userForm');
+        const restaurantForm = document.getElementById('restaurantForm');
+
+        function openuserForm() {
+            // Show the selected form
+            userForm.showModal();
+        }
+        // Function to close the form dynamically based on the form ID
+        function closeuserForm() {
+            userForm.close();
+        }
+    </script>
+
 
 </body>
 </html>
