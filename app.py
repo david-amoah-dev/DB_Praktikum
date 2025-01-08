@@ -140,10 +140,12 @@ def login():
             session['plz'] = resto.plz
             session['id'] = resto.id
 
-            return render_template('resgistersaghar.html')
+            return render_template('resgistersaghar.html', name=resto.name)
+    else :
+        return render_template('loginsaghar.html')
         
     
-    return render_template('loginsaghar.html')
+  
 
 @app.route('/bestellansicht', methods =["GET", "POST"])
 def bestellansicht():
