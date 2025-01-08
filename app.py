@@ -153,8 +153,7 @@ def bestellansicht():
     orders = Orders.query.order_by(
         # numbers to group orders by priority, time.desc() to sort by decending time after being grouped by their status
         db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2},value=Orders.lieferstatus),Orders.time.desc()).all()
-    return render_template('resto_Bestellansicht.html', orders=orders)
-
+    return render_template('resto_Bestellansicht.html', orders = orders)
     
 @app.route('/restaurants', methods=["GET"])
 def CatchResto():
@@ -191,7 +190,15 @@ def finished_order(order_id):
 
 @app.route('/add_order', methods=["POST"])
 def add_order():
-    if request.method == "POST":
+    if request.method == "POST": 
+        if "user" in session:
+            user = session["user"]
+            if user["type"] == "Kunde":
+            # Fetch the Kunde user from the database using the stored ID
+                kunde = Kunde.query.get_or_404(user["id"])
+                
+        name = {kunde.nachname, kunde.vorname}
+        adresse = kunde.adresse
         lieferstatus = request.form.get("lieferstatus")
         items = request.form.get("items")
 
