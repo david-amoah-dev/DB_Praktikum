@@ -110,6 +110,8 @@ def login():
         print(f"Received username: {username}, password: {password}") #debugging
     
         kunde = Kunde.query.filter_by(nachname=username).first()
+        resto = Resto.query.filter_by(name=username).first()
+
 
         if kunde and kunde.password == password:
             print("password is right")#debugging
@@ -118,9 +120,13 @@ def login():
             session['id'] = kunde.id
 
             return redirect(url_for('CatchResto'))#showa the restaurants if any available
-        else:
-            return render_template('loginsaghar.html')
-    
+        elif resto and resto.password == password:
+            session['username']= resto.name
+            session['plz'] = resto.plz
+            session['id'] = resto.id
+
+            return render_template('resgistersaghar.html')
+        
     
     return render_template('loginsaghar.html')
 
