@@ -29,6 +29,24 @@
     <p>Restaurant Listing</p>
 </div>
 
+    <h2 style="color: #025252; margin: 10px;">GEÖFFNETE RESTAURANTS</h2>
+    <div class="box">
+        {% for restaurant in restaurants %}
+
+        <div class="resto">
+            <div>
+                <img src="{{ url_for('static', filename='images/not-available.png') }} ">
+            </div>
+            <div>
+                <h2>{{ restaurant.name }}</h2>
+                <p >{{ restaurant.beschreibung }}</p>
+                <p><strong>Öffnungszeiten:</strong><br> {{ restaurant.openTime }}</p>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
 <!-- footer -->
 <footer>
 

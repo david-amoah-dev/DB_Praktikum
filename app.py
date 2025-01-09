@@ -77,7 +77,13 @@ def cstmwaren():
 
 @app.route("/cstmhome")
 def cstmpage():
-    return render_template('CustomerView-RestaurantOverview.html')
+    #catch the PLZ from session(for now the static version)
+    kunde_postleitzahl = session.get('plz')
+
+    #catch the restaurant with the same PLZ
+    restaurants= Resto.query.filter_by(plz=kunde_postleitzahl).all()
+    return render_template('CustomerView-RestaurantOverview.html', restaurants = restaurants)
+
 
 @app.route("/cstmbsth")
 def cstmbsth():
