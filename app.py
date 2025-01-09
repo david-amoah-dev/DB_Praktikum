@@ -134,7 +134,7 @@ def login():
             session['plz'] = kunde.postleitzahl
             session['id'] = kunde.id
 
-            return redirect(url_for('CatchResto'))#showa the restaurants if any available
+            return redirect(url_for('bestellansicht'))#showa the restaurants if any available
         elif resto and resto.password == password:
             session['username']= resto.name
             session['plz'] = resto.plz
@@ -190,15 +190,15 @@ def finished_order(order_id):
 
 @app.route('/add_order', methods=["POST"])
 def add_order():
+    name = "unknown"
+    adresse = "unknown"
     if request.method == "POST": 
-        if "user" in session:
-            user = session["user"]
-            if user["type"] == "Kunde":
-            # Fetch the Kunde user from the database using the stored ID
-                kunde = Kunde.query.get_or_404(user["id"])
+        if 'id' in session:  # Überprüfen, ob der Benutzer eingeloggt ist
+            kunde = Kunde.query.get_or_404(session['id'])  # Hole den Kunden mit der ID aus der Session
+            name = f"{kunde.vorname} {kunde.nachname}"  # Setze den vollständigen Namen (Vorname + Nachname)
+            adresse = kunde.adresse
+            
                 
-        name = {kunde.nachname, kunde.vorname}
-        adresse = kunde.adresse
         lieferstatus = request.form.get("lieferstatus")
         items = request.form.get("items")
 
