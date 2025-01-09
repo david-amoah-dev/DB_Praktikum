@@ -337,10 +337,10 @@ def login():
 # ____________________________________________simons routes____________________________________________
 @app.route("/home")
 def index():
-    if not session.get("user"):
+    if not session.get("username"):
         return render_template("Welcomepage.html")
-    user = session["user"]
-    return redirect(url_for("homepage"))
+    user = session["username"]
+    return redirect(url_for("cstmpage"))
         # Homepage Restaurantübersicht
 
 # todo delete this
@@ -358,9 +358,9 @@ def homepagesim():
 #@app.route("/login/", methods=["POST", "GET"])
 #def login():
 #    if "user" in session:
-#        return redirect(url_for("profile"))
+#        return redirect(url_for("cstmprofile"))
 #    if request.method == "GET":
-#        return render_template("login.html")
+#        return render_template("Welcomepage.html")
 #    elif request.method == "POST":
 #        temp = request.form["username"]
 #        user1 = {"id" : 1, "type" : "Kunde"}
@@ -370,17 +370,17 @@ def homepagesim():
 #        return redirect(url_for("index"))
         # error message?
 
-@app.route("/logout/")
+@app.route("/logout/") # logout is complete
 def logout():
-    session.pop("user", None)
-    return redirect(url_for("login"))
+    session.pop("username", None)
+    return redirect(url_for("index"))
 
 # ________________profile____________
-@app.route("/profile/")
+@app.route("/profile/") #important to look at
 def profile():
-    if not session.get("user"):
-        return redirect(url_for("login"))
-    user1 = session["user"]
+    if not session.get("username"):
+        return redirect(url_for("index"))
+    user1 = session["username"]
     print(user1)
     user2 = None
     if user1["type"] == "Kunde":
