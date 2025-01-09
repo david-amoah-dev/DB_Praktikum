@@ -378,6 +378,10 @@ def logout():
 # ________________profile____________
 @app.route("/profile/") #important to look at # should work now
 def profile():
+    # just for testing
+    #user1 = {"id" : 1, "type" : "Kunde"}
+    #session["user"] = user1
+
     if not session.get("user"):
         return redirect(url_for("login"))
     user1 = session["user"]
