@@ -25,9 +25,50 @@
 <h1>Customer Order-History Page</h1>
 
 <!-- Bestellhistorie -->
-<div>
+{% for order in orders %}
+<div class="box" data-status="{{ order.lieferstatus }}">
+    <h3>Bestellung: {{ order.time }}</h3>
+    <h4>Bestellnummer: {{ order.id }}</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Lieferstatus</th>
+                <th>Items</th>
+                <th>Preis</th>
+                <th>Menge</th>
+                <th>Zahlungsstatus</th>
+                <th>Liefergebühren</th>
+                <th>Gesamt</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ order.lieferstatus }}</td>
+                <td>{{ order.items }}</td>
+                <td>{{ order.preis }}€</td>
+                <td>{{ order.menge }}</td>
+                <td>{{ order.zahlungsstatus }}</td>
+                <td>{{ order.liefergebuehren }}€</td>
+                <td>{{ order.gesamt }}€</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="comment-section">
+        <p><b>Anmerkungen: </b>{{ order.anmerkungen }}<p>
+    </div>
+    <div class="customer-and-buttons">
+        <div class="customer-data">
+            <h2><b>Kundendaten</b></h2>
+        <!-- muss name adresse aus der order selbst nehmen -->
+            <p> {{ order.name }} </p>
+            <p> {{ order.adresse }}</p>
+        </div>
+    </div>
 
+    </div>
 </div>
+{% endfor %}
+
 
 
 <!-- footer -->
