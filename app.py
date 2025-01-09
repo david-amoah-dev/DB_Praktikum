@@ -28,6 +28,9 @@ class Resto(db.Model):
     # bild = db.Column()
     wallet = db.Column(db.Integer, nullable=False, default=0)
 
+    def __repr__(self):
+       return f"Resto('{self.name}')"
+
 class Kunde(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     vorname = db.Column(db.String(20), unique = False, nullable = False)
@@ -36,6 +39,9 @@ class Kunde(db.Model):
     postleitzahl = db.Column(db.Integer(), nullable = False)
     password = db.Column(db.String(20), nullable = False)
     wallet = db.Column(db.Integer, nullable=False, default=100)
+
+    def __repr__(self):
+       return f"Kunde('{self.nachname}')"
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -56,15 +62,11 @@ class Order(db.Model):
     # ammountOfItem = db.Column(db.Integer(), nullable = False)
 
 # Page routes----------------------------------------------------------------------------------
-@app.route("/")
+@app.route("/", methods=["GET"])
 def homepage():
      return render_template('Welcomepage.html')
 
 # Customer Pages----------------------------------------------
-@app.route("/cstmlogin")
-def cstmlogin():
-    return render_template('CustomerView-Login.html')
-
 @app.route("/cstmprofile")
 def cstmprofile():
     return render_template('CustomerView-Profile.html')
@@ -88,10 +90,6 @@ def cstmrstdtl():
 
 
 # Restaurant Pages-------------------------------------------------
-@app.route("/rstrlogin")
-def rstrlogin():
-    return render_template('RestaurantView-Login.html')
-
 @app.route("/rstrbstlh")
 def rstrbstlh():
     return render_template('RestaurantView-Bestellhistorie.html')
@@ -162,26 +160,10 @@ def ordradd():
         db.session.commit()
     return redirect(url_for("rstrspkt"))
 
-# ____________________________________________simons routes____________________________________________
-@app.route("/home")
-def index():
-    if not session.get("user"):
-        return render_template("home.html")
-    user = session["user"]
-    return redirect(url_for("homepage"))
-        # Homepage Restaurantübersicht
+# __________________________________________saghars routes___________________________________
 
-# todo delete this
-@app.route("/homepage/")
-def homepagesim():
-    if not "user" in session:
-        return render_template("index_old.html")
-    user = session["user"]
-    return render_template("index_old.html", username = user)
-
-# ______________________reigister / logins________________
-# pop up request
-@app.route("/registerKunde", methods=["GET","POST"])
+# __________________________register Method_________________
+@app.route('/registerKunde', methods=["POST"])
 def registerKunde():
     if request.method == "POST":
         vorname = request.form.get("vorname")
@@ -199,13 +181,9 @@ def registerKunde():
         print(f"Received: {vorname}, {nachname}, {adresse}, {postleitzahl}, {password}")
         db.session.add(new_user)
         db.session.commit()
-        # todo replace user with primary key
-        id = 1
-        user = {"id": id, "type": "Kunde"}
-        session["user"] = user
     return render_template("Welcomepage.html")
 
-@app.route("/registerResto", methods=["GET","POST"])
+@app.route('/registerResto', methods=["POST"])
 def registerResto():
     if request.method == "POST":
         name = request.form.get("name")
@@ -225,26 +203,71 @@ def registerResto():
         print(f"Received: {name}, {strasse}, {plz}, {beschreibung}, {password}, {openTime}")
         db.session.add(new_resto)
         db.session.commit()
-        # to do replace with primary key / possible to get primary key from commit?
-        id = 1
-        user = {"id": id, "type": "Resto"}
-        session["user"] = user
     return render_template("Welcomepage.html")
 
-# delete this
-@app.route("/login/", methods=["POST", "GET"])
+# ______________________login Method________________
+@app.route('/login', methods=["POST", "GET"])
 def login():
-    if "user" in session:
-        return redirect(url_for("profile"))
-    if request.method == "GET":
-        return render_template("login.html")
-    elif request.method == "POST":
-        temp = request.form["username"]
-        user1 = {"id" : 1, "type" : "Kunde"}
-        session["user"] = user1
-        return redirect(url_for("profile"))
-    else:
-        return redirect(url_for("index"))
+    if request.method== "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        print(f"Received username: {username}, password: {password}") #debugging
+
+        kunde = Kunde.query.filter_by(nachname=username).first()
+        resto = Resto.query.filter_by(name=username).first()
+
+
+        if kunde and kunde.password == password:
+            print("password is right")#debugging
+            session['username'] = kunde.nachname
+            session['plz'] = kunde.postleitzahl
+            session['id'] = kunde.id
+
+            return redirect(url_for('cstmpage'))#showa the restaurants if any available
+        elif resto and resto.password == password:
+            session['username']= resto.name
+            session['plz'] = resto.plz
+            session['id'] = resto.id
+
+            return redirect(url_for('rstrspkt'))
+
+
+    return render_template('Welcomepage.html')
+
+# ____________________________________________simons routes____________________________________________
+@app.route("/home")
+def index():
+    if not session.get("user"):
+        return render_template("Welcomepage.html")
+    user = session["user"]
+    return redirect(url_for("homepage"))
+        # Homepage Restaurantübersicht
+
+# todo delete this
+@app.route("/homepage/")
+def homepagesim():
+    if not "user" in session:
+        return render_template("Welcomepage.html")
+    user = session["user"]
+    return render_template("Welcomepage.html", username = user)
+
+# ______________________reigister / logins________________
+# pop up request
+
+# delete this
+#@app.route("/login/", methods=["POST", "GET"])
+#def login():
+#    if "user" in session:
+#        return redirect(url_for("profile"))
+#    if request.method == "GET":
+#        return render_template("login.html")
+#    elif request.method == "POST":
+#        temp = request.form["username"]
+#        user1 = {"id" : 1, "type" : "Kunde"}
+#        session["user"] = user1
+#        return redirect(url_for("profile"))
+#    else:
+#        return redirect(url_for("index"))
         # error message?
 
 @app.route("/logout/")

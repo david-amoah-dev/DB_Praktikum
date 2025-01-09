@@ -27,8 +27,6 @@
 
 <h3>Customer Pages</h3>
 <div>
-    <a href="cstmlogin">Login</a>
-    <br>
     <a href="cstmhome">Home</a>
     <br>
     <a href="cstmprofile">Profile</a>
@@ -42,8 +40,6 @@
 
 <h3>Restaurant Pages</h3>
 <div>
-    <a href="rstrlogin">Login</a>
-    <br>
     <a href="rstrspkt">Home</a>
     <br>
     <a href="rstrprofile">Profile</a>
@@ -53,11 +49,38 @@
 
 <!-- ________________________new Code_______________________ -->
 
+<br>
+<!-- ______________________login Form_______________________ -->
+    <div class="container">
+        <div class="box">
+            <img class="logo" src="{{ url_for('static', filename='images/LP.png') }} ">
+
+            <form action="/login" method="POST">
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? Register below</p>
+
+        </div>
+    </div>
+
+
+<br>
+
+<!-- _____________________register Forms_________________ -->
+
     <!-- Button to open the user registration form -->
     <button class="btn register" onclick="openuserForm()"><b>Kunden registrieren</b></button>
 
     <!-- Button to open the restaurant registration form -->
-    <button class="btn register" onclick="openuserForm()"><b>Restaurant registrieren</b></button>
+    <button class="btn register" onclick="openrestoForm()"><b>Restaurant registrieren</b></button>
 
     <!-- User Registration Form -->
     <dialog id="userForm">
@@ -108,7 +131,7 @@
             <input type="text" placeholder="Öffnungszeit" name="openTime" required>
 
             <button type="submit" class="btn"><b>registrieren</b></button>
-            <button type="button" class="btn cancel" onclick="closeuserForm()"><b>schließen</b></button>
+            <button type="button" class="btn cancel" onclick="closerestoForm()"><b>schließen</b></button>
         </form>
     </dialog>
 
@@ -123,6 +146,15 @@
         // Function to close the form dynamically based on the form ID
         function closeuserForm() {
             userForm.close();
+        }
+
+        function openrestoForm() {
+            // Show the selected form
+            restaurantForm.showModal();
+        }
+        // Function to close the form dynamically based on the form ID
+        function closerestoForm() {
+            restaurantForm.close();
         }
     </script>
 
