@@ -28,6 +28,10 @@
 <h1 class="head">Speisekarte</h1>
 <h3 id="C1" class="head">Menü</h3>
 
+<div class="horizontal-center">
+    <button id="tstbtn" class="addbtn" onclick=showCreateItemD() style="float:right;"><b>+</b></button>
+</div>
+
 {% for x in items %}
 <div class="columnright">
 <div class="card">
@@ -38,10 +42,6 @@
         <p><b>{{x.price}}</b></p>
         <button class="editbtn" type="button" onclick=showUpdateItemD()>edit</button>
         <a href="{{ url_for('delitm', mid=x.id) }}">delete</a>
-
-        <div class="horizontal-center">
-            <button id="tstbtn" class="addbtn" onclick=showCreateItemD()><b>+</b></button>
-        </div>
     </div>
 </div>
 

@@ -152,17 +152,26 @@ def delitm(mid):
 def upditm(updid):
     item = db.session.execute(db.select(Item).filter_by(id = updid)).scalar_one()
     if request.method == "POST":
-        ordrtitle = request.form.get("upitemname")
-        comment = request.form.get("updescription")
+        upitmname = request.form.get("upitemname")
+        updescription = request.form.get("updescription")
+        upprice = request.form.get("upprice")
+        upcategory = request.form.get("upcategory")
 
         # update Item
-        item = Item(itmname = upitemname,description = updescription,price = upprice,category = upcategory)
+
+        updated_item = Item.query.get_or_404(updid)
+
+        updated_item.itmname = upitmname
+        updated_item.description = updescription
+        updated_item.price = upprice
+        updated_item.category = upcategory
+
         print(f"Received: {upitmname}, {updescription}, {upprice}, {upcategory}")
-        db.session.update(item)
+        #db.session.update(item)
         db.session.commit()
     return redirect(url_for("rstrspkt"))
 
-@app.route("/itmadd", methods = ['POST'])
+@app.route("/ordradd", methods = ['POST']) #needs some work
 def ordradd():
     if request.method == "POST":
         itmname = request.form.get("itemname")
