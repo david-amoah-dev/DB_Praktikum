@@ -112,7 +112,7 @@
     <h2 style="color: #025252; margin: 10px;">GEÖFFNETE RESTAURANTS</h2>
     <div class="box">
         {% for restaurant in restaurants %}
-
+        <a href="{{ url_for('OpenRestaurant', restaurant_id=restaurant.id) }}">
         <div class="resto" >
             <div>
                 <img src="{{ url_for('static', filename='images/not-available.png') }} ">
@@ -124,6 +124,7 @@
             
             </div>
         </div>
+        </a>
         {% endfor %}
     </div>
 </body>

@@ -147,8 +147,16 @@ def login():
     
   
 
-@app.route('/bestellansicht', methods =["GET", "POST"])
-def bestellansicht():
+@app.route('/bestellansichtKunde', methods =["GET", "POST"])
+def bestellansichtKunde():
+
+    orders = Orders.query.order_by(
+        # numbers to group orders by priority, time.desc() to sort by decending time after being grouped by their status
+        db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2},value=Orders.lieferstatus),Orders.time.desc()).all()
+    return render_template('resto_Bestellansicht.html', orders = orders)
+
+@app.route('/bestellansichtResto', methods =["GET", "POST"])
+def bestellansichtResto():
 
     orders = Orders.query.order_by(
         # numbers to group orders by priority, time.desc() to sort by decending time after being grouped by their status
@@ -163,7 +171,16 @@ def CatchResto():
     #catch the restaurant with the same PLZ
     restaurants= Resto.query.filter_by(plz=kunde_postleitzahl).all()
     return render_template('restaurants.html', restaurants = restaurants)
-    
+
+
+@app.route('/Menu', methods=["GET"])
+def OpenRestaurant(restaurant_id):
+
+    restaurant = Resto.query.get_or_404(restaurant_id)
+
+    return render_template('RestaurantView-Speisekarte.html', restaurant=restaurant)
+
+
 
 @app.route("/profile/")
 def profile():
@@ -223,7 +240,7 @@ def profile_update():
 
 
 
- # edit redirecting!!
+ # edit redirecting!! für kunde und resto bearbeiten
 @app.route('/order/<int:order_id>/decline', methods=['POST'])
 def decline_order(order_id):
     order = Orders.query.get_or_404(order_id)
@@ -286,7 +303,8 @@ def add_order():
         db.session.add(new_order)
         db.session.commit()
 
-        return redirect(url_for('bestellansicht'))
+        return redirect(url_for('bestellansichtKunde'))
+    #muss auch eine für resto geschrieen werden
     
 @app.route("/summary/")
 def summary():
