@@ -48,6 +48,8 @@ class Orders(db.Model):
     gesamt = db.Column(db.Float, nullable=False)
     anmerkungen = db.Column(db.Text, nullable=True)
 
+
+
 @app.route('/', methods =["GET", "POST"])
 def bestellansicht():
     orders = Orders.query.order_by(

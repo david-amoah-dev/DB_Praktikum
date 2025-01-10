@@ -60,10 +60,15 @@ class Orders(db.Model):
     anmerkungen = db.Column(db.Text, nullable=True)
     name = db.Column(db.Text, nullable=False) 
     adresse = db.Column(db.Text, nullable=False) 
+    #restaurant id beinhalten
     
 
 with app.app_context():
   db.create_all()
+
+@app.route('/', methods =["GET", "POST"])
+def homepage():
+    return redirect(url_for('login'))
 
 @app.route('/registeringPage', methods=["GET"])
 def registeringPage():
@@ -88,7 +93,7 @@ def registerKunde():
         print(f"Received: {vorname}, {nachname}, {adresse}, {postleitzahl}, {password}")
         db.session.add(new_user)
         db.session.commit()
-    return render_template("restaurants.html")
+    return redirect(url_for('login'))
 
 @app.route('/registerResto', methods=["POST"])
 def registerResto():
@@ -110,13 +115,8 @@ def registerResto():
         print(f"Received: {name}, {strasse}, {plz}, {beschreibung}, {password}, {openTime}")
         db.session.add(new_resto)
         db.session.commit()
-    return render_template("restaurants.html")
-
-
-
-@app.route('/', methods =["GET", "POST"])
-def homepage():
     return redirect(url_for('login'))
+
 
 
 @app.route('/login', methods=["POST", "GET"])
@@ -132,15 +132,13 @@ def login():
 
         if kunde and kunde.password == password:
             print("password is right")#debugging
-            session['username'] = kunde.nachname
-            session['plz'] = kunde.postleitzahl
-            session['id'] = kunde.id
+            user = {"id" : kunde.id, "type" : "Kunde", "plz" : kunde.postleitzahl, "username" : kunde.nachname}
+            session["user"] = user
 
             return redirect(url_for('CatchResto'))#showa the restaurants if any available
         elif resto and resto.password == password:
-            session['username']= resto.name
-            session['plz'] = resto.plz
-            session['id'] = resto.id
+            user = {"id" : resto.id, "type" : "Resto", "plz" : resto.plz, "username" : resto.name}
+            session["user"] = user
 
             return render_template('resgistersaghar.html', name=resto.name)
     else :
@@ -165,6 +163,64 @@ def CatchResto():
     #catch the restaurant with the same PLZ
     restaurants= Resto.query.filter_by(plz=kunde_postleitzahl).all()
     return render_template('restaurants.html', restaurants = restaurants)
+    
+
+@app.route("/profile/")
+def profile():
+    if not session.get("user"):
+        return redirect(url_for("login"))
+    user1 = session["user"]
+
+    if user1["type"] == "Kunde":
+        user = Kunde.query.get_or_404(user1["id"])
+    else:
+        user = Resto.query.get_or_404(user1["id"])
+    return render_template("profile.html", content=user, userType = user1["type"])
+    
+@app.route("/profile/update/", methods=["POST", "GET"])
+def profile_update():
+    user = session["user"]
+    if user["type"] == "Kunde":
+        if request.method == "POST":
+
+            vorname = request.form.get("vorname")
+            nachname = request.form.get("nachname")
+            adresse = request.form.get("adresse")
+            postleitzahl = request.form.get("postleitzahl")
+            password = request.form.get("password")
+
+            user = Kunde.query.get_or_404(user["id"])
+
+            user.vorname = vorname
+            user.nachname = nachname
+            user.adresse = adresse
+            user.postleitzahl = postleitzahl
+            user.password = password
+
+            db.session.commit()
+    else: 
+        if request.method == "POST":
+
+            name = request.form.get("name")
+            strasse = request.form.get("strasse")
+            plz = request.form.get("plz")
+            beschreibung = request.form.get("beschreibung")
+            password = request.form.get("password")
+            openTime = request.form.get("openTime")
+
+            user = Resto.query.get_or_404(user["id"])
+            
+            user.name = name
+            user.strasse = strasse
+            user.plz = plz
+            user.beschreibung = beschreibung
+            user.password = password
+            user.openTime = openTime
+
+            db.session.commit()
+    
+    return redirect(url_for("profile"))
+
 
 
  # edit redirecting!!
@@ -231,6 +287,32 @@ def add_order():
         db.session.commit()
 
         return redirect(url_for('bestellansicht'))
+    
+@app.route("/summary/")
+def summary():
+    if not "user" in session:
+        return redirect(url_for("login"))
+    # to do change to get items from session
+    item1 = {"name" : "Name1", "description" : "Text1", "price" : 1.20, "amount" : 5}
+    item2 = {"name" : "Name2", "description" : "Text2", "price" : 2.20, "amount" : 4}
+    item3 = {"name" : "Name3", "description" : "Text3", "price" : 3.20, "amount" : 3}
+    
+    #if not "items" in session:
+        # no items selected
+    #    return redirect(url_for("index"))
+    items = [item1, item2, item3]
+    total = 0.0
+    for e in items:
+        total += e["price"]
+    final = f"{total:.2f}"
+    return render_template("summary.html", content = items, total = final)
+
+    
+
+@app.route("/logout/")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("login"))
     
 if __name__ == '__main__':
     app.run(debug=True)
