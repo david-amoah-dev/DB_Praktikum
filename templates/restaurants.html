@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEÖFFNETE RESTAURANTS</title>
+    <style>
+        * {
+            box-sizing: border-box; /* Include padding and borders in width/height calculations */
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        /* Applying font styles to all text */
+        body {
+            font-family: 'Roboto', sans-serif; /* Apply Roboto font to everything */
+            font-size: 14px; /* Default font size for the entire page */
+            color: #025252;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+          
+        }
+        .resto {
+            display:grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: rgb(214, 139, 95);
+            border-radius: 16px;
+            height: 200px; /* Adjusted height */
+            width: 400px; /* Adjusted width */
+        }
+
+        .resto > div:first-child {
+            display: flex;
+            justify-content: center; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+            width: 100%;
+        }
+        .resto > div:nth-child(2) {
+            padding: 5px;
+    
+        }
+        .resto img{
+            display: block;
+            max-width: 100%;  /* Ensures the image does not exceed the column width */
+            height: auto;      /* Maintains aspect ratio */
+            padding: 5px;
+            border-radius: 16px;
+            margin: 0 auto;
+        }
+    
+        .box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 2px;
+            gap: 20px;
+            justify-items: center;
+            border-radius: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            margin: 10px;
+            background-color: rgb(255, 255, 255);
+
+
+        }
+        .logo{
+            height: 80px;
+            border-radius: 10px;
+        }
+        .header-layout{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: rgb(255, 255, 255);
+            border: 1px solid #ccc;
+            
+        }
+        .header-layout > div:first-child {
+            display: flex;
+            justify-content: left; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+            
+        }
+        .header-layout > div:nth-child(2) {
+            display: flex;
+            justify-content: right;
+            align-items: center; 
+            
+    
+        }
+
+      
+    </style>
+</head>
+<body>
+    
+    <div  class=" header-layout">
+        <div>
+            <a href="{{ url_for('CatchResto')}}">
+                <img class="logo" src="{{ url_for('static', filename='images/LP.png') }} ">
+            </a>
+        </div>
+        <div style=" padding: 10px;">
+            <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
+
+            <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
+        </div>
+
+    </div>
+    
+
+
+
+    <h2 style="color: #025252; margin: 10px;">GEÖFFNETE RESTAURANTS</h2>
+    <div class="box">
+        {% for restaurant in restaurants %}
+
+        <div class="resto">
+            <div>
+                <img src="{{ url_for('static', filename='images/not-available.png') }} ">
+            </div>
+            <div>
+                <h2>{{ restaurant.name }}</h2>
+                <p >{{ restaurant.beschreibung }}</p>
+                <p><strong>Öffnungszeiten:</strong><br> {{ restaurant.openTime }}</p>
+            
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html> 	
