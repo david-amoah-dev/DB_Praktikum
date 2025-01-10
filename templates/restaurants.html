@@ -99,6 +99,9 @@
             </a>
         </div>
         <div style=" padding: 10px;">
+            <form action="{{ url_for('logout') }}" method="POST">
+                <button type="submit">Logout</button>
+            </form>
             <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
 
             <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
@@ -112,7 +115,7 @@
     <h2 style="color: #025252; margin: 10px;">GEÖFFNETE RESTAURANTS</h2>
     <div class="box">
         {% for restaurant in restaurants %}
-        <a href="{{ url_for('OpenRestaurant', restaurant_id=restaurant.id) }}">
+        <a href="{{ url_for('test', restaurant_id=restaurant.id) }}">
         <div class="resto" >
             <div>
                 <img src="{{ url_for('static', filename='images/not-available.png') }} ">

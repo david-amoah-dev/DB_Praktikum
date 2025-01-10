@@ -14,7 +14,7 @@ app = Flask(__name__)
 # configure the SQLite database, relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project2.db"
 app.config['STATIC_FOLDER'] = 'static'
-app.secret_key = 'supersecretkey'  # This is just an example, do not use simple keys like this in production
+app.secret_key = 'someKey'  # This is just an example, do not use simple keys like this in production
 
 # initialize the app with the extension
 db.init_app(app)
@@ -132,10 +132,13 @@ def login():
 
         if kunde and kunde.password == password:
             print("password is right")#debugging
-            user = {"id" : kunde.id, "type" : "Kunde", "plz" : kunde.postleitzahl, "username" : kunde.nachname}
-            session["user"] = user
-
-            return redirect(url_for('CatchResto'))#showa the restaurants if any available
+            session['user'] = {
+                'id': kunde.id,
+                'type': 'Kunde',
+                'plz': kunde.postleitzahl,
+                'username': kunde.nachname
+            }
+            return redirect(url_for('bestellansichtKunde'))#showa the restaurants if any available
         elif resto and resto.password == password:
             user = {"id" : resto.id, "type" : "Resto", "plz" : resto.plz, "username" : resto.name}
             session["user"] = user
@@ -166,7 +169,7 @@ def bestellansichtResto():
 @app.route('/restaurants', methods=["GET"])
 def CatchResto():
     #catch the PLZ from session(for now the static version)
-    kunde_postleitzahl = session.get('plz')
+    kunde_postleitzahl = session['user'].get('plz')
 
     #catch the restaurant with the same PLZ
     restaurants= Resto.query.filter_by(plz=kunde_postleitzahl).all()
@@ -268,8 +271,9 @@ def add_order():
     name = "unknown"
     adresse = "unknown"
     if request.method == "POST": 
-        if 'id' in session:  # Überprüfen, ob der Benutzer eingeloggt ist
-            kunde = Kunde.query.get_or_404(session['id'])  # Hole den Kunden mit der ID aus der Session
+        if 'user' in session:  # Überprüfen, ob der Benutzer eingeloggt ist
+            user = session['user']
+            kunde = Kunde.query.get_or_404( user['id'])  # Hole den Kunden mit der ID aus der Session
             name = f"{kunde.vorname} {kunde.nachname}"  # Setze den vollständigen Namen (Vorname + Nachname)
             adresse = kunde.adresse
             
@@ -327,10 +331,20 @@ def summary():
 
     
 
-@app.route("/logout/")
+@app.route('/logout', methods=['POST'])
 def logout():
-    session.pop("user", None)
-    return redirect(url_for("login"))
+    # Clear all session data
+    session.clear()  # This clears the entire session
+    return redirect(url_for('login'))  # Redirect to login page after logout
+
+
+#was man braucht um richtige restaurant seite hochzuladen(nur test)
+@app.route('/test/<int:restaurant_id>', methods=['GET', 'POST'])
+def test( restaurant_id):
+    restaurant = Resto.query.get_or_404(restaurant_id)
+
+    return render_template("test.html", restaurant=restaurant)
+
     
 if __name__ == '__main__':
     app.run(debug=True)
