@@ -58,6 +58,8 @@ class Orders(db.Model):
     liefergebuehren = db.Column(db.Float, nullable=False)
     gesamt = db.Column(db.Float, nullable=False)
     anmerkungen = db.Column(db.Text, nullable=True)
+    name = db.Column(db.Text, nullable=False) 
+    adresse = db.Column(db.Text, nullable=False) 
     
 
 with app.app_context():
@@ -134,7 +136,7 @@ def login():
             session['plz'] = kunde.postleitzahl
             session['id'] = kunde.id
 
-            return redirect(url_for('bestellansicht'))#showa the restaurants if any available
+            return redirect(url_for('CatchResto'))#showa the restaurants if any available
         elif resto and resto.password == password:
             session['username']= resto.name
             session['plz'] = resto.plz
@@ -221,7 +223,9 @@ def add_order():
             zahlungsstatus=zahlungsstatus,
             liefergebuehren=liefergebuehren,
             gesamt=gesamt,
-            anmerkungen = anmerkungen
+            anmerkungen = anmerkungen,
+            name=name,
+            adresse= adresse
         )
         db.session.add(new_order)
         db.session.commit()
