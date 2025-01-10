@@ -186,195 +186,12 @@ def ordradd():
         db.session.commit()
     return redirect(url_for("rstrspkt"))
 
-#___________________________________________Dinhs routes___________________________________
-@app.route('/bestellansicht', methods =["GET", "POST"])
-def bestellansicht():
-
-    orders = Orders.query.order_by(
-        # numbers to group orders by priority, time.desc() to sort by decending time after being grouped by their status
-        db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2},value=Orders.lieferstatus),Orders.time.desc()).all()
-    return render_template('RestaurantView-Bestellhistorie.html', orders = orders)
-
-#________________________________________
-
-@app.route('/order/<int:order_id>/decline', methods=['POST'])
-def decline_order(order_id):
-    order = Orders.query.get_or_404(order_id)
-    order.lieferstatus = "storniert"
-    order.zahlungsstatus = "abgebrochen"
-    db.session.commit()
-    return redirect(url_for('bestellansicht'))
-@app.route('/order/<int:order_id>/accept', methods=['POST'])
-def accept_order(order_id):
-    order = Orders.query.get_or_404(order_id)
-    order.lieferstatus = "in Zubereitung"
-    order.zahlungsstatus = "abgeschlossen"
-    db.session.commit()
-    return redirect(url_for('bestellansicht'))
-@app.route('/order/<int:order_id>/finished', methods=['POST'])
-def finished_order(order_id):
-    order = Orders.query.get_or_404(order_id)
-    order.lieferstatus = "abgeschlossen"
-    db.session.commit()
-    return redirect(url_for('bestellansicht'))
-
-# ____________________________________________
-
-@app.route('/add_order', methods=["POST"])
-def add_order():
-    if request.method == "POST":
-        #if "user" in session:
-         #   user = session["user"]
-          #  if user["type"] == "Kunde":
-            # Fetch the Kunde user from the database using the stored ID
-        #        kunde = Kunde.query.get_or_404(user["id"])
-
-        #name = {kunde.nachname, kunde.vorname}
-        #adresse = kunde.adresse
-        lieferstatus = request.form.get("lieferstatus")
-        items = request.form.get("items")
-
-        # preis ist nicht static gespeichert!!
-        preis = float(request.form.get("preis"))
-
-        menge = int(request.form.get("menge"))
-        zahlungsstatus = request.form.get("zahlungsstatus")
-        liefergebuehren = float(request.form.get("liefergebuehren"))
-        anmerkungen = request.form.get("anmerkungen")
-
-        # muss noch angepasst werden
-        gesamt = preis * menge + liefergebuehren
-
-        new_order = Orders(
-            lieferstatus=lieferstatus,
-            items=items,
-            preis=preis,
-            menge=menge,
-            zahlungsstatus=zahlungsstatus,
-            liefergebuehren=liefergebuehren,
-            gesamt=gesamt,
-            anmerkungen = anmerkungen
-        )
-        db.session.add(new_order)
-        db.session.commit()
-
-        return redirect(url_for('bestellansicht'))
-
-# __________________________________________saghars routes___________________________________
-
-# __________________________register Method_________________
-@app.route('/registerKunde', methods=["POST"])
-def registerKunde():
-    if request.method == "POST":
-        vorname = request.form.get("vorname")
-        nachname = request.form.get("nachname")
-        adresse = request.form.get("adresse")
-        postleitzahl = request.form.get("postleitzahl")
-        password = request.form.get("password")
-        # create Kunde
-        new_user = Kunde(
-            vorname=vorname,
-            nachname=nachname,
-            adresse=adresse,
-            postleitzahl=int(postleitzahl),
-            password=password)
-        print(f"Received: {vorname}, {nachname}, {adresse}, {postleitzahl}, {password}")
-        db.session.add(new_user)
-        db.session.commit()
-    return render_template("Welcomepage.html")
-
-@app.route('/registerResto', methods=["POST"])
-def registerResto():
-    if request.method == "POST":
-        name = request.form.get("name")
-        strasse = request.form.get("strasse")
-        plz = request.form.get("plz")
-        beschreibung = request.form.get("beschreibung")
-        password = request.form.get("password")
-        openTime = request.form.get("openTime")
-
-        new_resto = Resto(
-            name=name,
-            strasse=strasse,
-            plz=int(plz),
-            beschreibung=beschreibung,
-            password=password,
-            openTime=openTime)
-        print(f"Received: {name}, {strasse}, {plz}, {beschreibung}, {password}, {openTime}")
-        db.session.add(new_resto)
-        db.session.commit()
-    return render_template("Welcomepage.html")
-
-# ______________________login Method________________
-@app.route('/login', methods=["POST", "GET"])
-def login():
-    if request.method== "POST":
-        username = request.form.get("username")
-        password = request.form.get("password")
-        print(f"Received username: {username}, password: {password}") #debugging
-
-        kunde = Kunde.query.filter_by(nachname=username).first()
-        resto = Resto.query.filter_by(name=username).first()
-
-
-        if kunde and kunde.password == password:
-            print("password is right")#debugging
-            session['username'] = kunde.nachname
-            session['plz'] = kunde.postleitzahl
-            session['id'] = kunde.id
-
-            return redirect(url_for('cstmpage'))#showa the restaurants if any available
-        elif resto and resto.password == password:
-            session['username']= resto.name
-            session['plz'] = resto.plz
-            session['id'] = resto.id
-
-            return redirect(url_for('rstrspkt'))
-
-
-    return render_template('Welcomepage.html')
-
-# ____________________________________________simons routes____________________________________________
-@app.route("/home")
-def index():
-    if not session.get("username"):
-        return render_template("Welcomepage.html")
-    user = session["username"]
-    return redirect(url_for("cstmpage"))
-        # Homepage Restaurantübersicht
-
-# todo delete this
-@app.route("/homepage/")
-def homepagesim():
-    if not "user" in session:
-        return render_template("Welcomepage.html")
-    user = session["user"]
-    return render_template("Welcomepage.html", username = user)
-
-# ______________________reigister / logins________________
-# pop up request
-
-# delete this
-#@app.route("/login/", methods=["POST", "GET"])
-#def login():
-#    if "user" in session:
-#        return redirect(url_for("cstmprofile"))
-#    if request.method == "GET":
-#        return render_template("Welcomepage.html")
-#    elif request.method == "POST":
-#        temp = request.form["username"]
-#        user1 = {"id" : 1, "type" : "Kunde"}
-#        session["user"] = user1
-#        return redirect(url_for("profile"))
-#    else:
-#        return redirect(url_for("index"))
-        # error message?
-
 @app.route("/logout/") # logout is complete
 def logout():
     session.pop("username", None)
     return redirect(url_for("index"))
 
+<<<<<<< HEAD
 # ________________profile____________
 @app.route("/profile/") #important to look at # should work now
 def profile():
@@ -459,6 +276,8 @@ def summary():
 
 
 
+=======
+>>>>>>> 1e7d735 (löschung)
 #-----------------------------------------------------------------------------------
 
 if __name__ == '__main__':
