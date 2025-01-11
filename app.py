@@ -262,7 +262,7 @@ def profile_update():
 
 
 
- # edit redirecting!! für kunde und resto bearbeiten
+
 @app.route('/order/<int:order_id>/decline', methods=['POST'])
 def decline_order(order_id):
     order = Orders.query.get_or_404(order_id)
@@ -343,7 +343,7 @@ def add_order():
         db.session.commit()
 
         return redirect(url_for('bestellansichtKunde'))
-    #muss auch eine für resto geschrieen werden
+
     
 @app.route("/summary/")
 def summary():
@@ -390,11 +390,12 @@ def new_order():
     # serialize Items
     serializedItems = json.dumps(items) 
 
-    new_order = Orders(
-        lieferstatus = "in Bearbeitung",
+    if user.wallet - total<0:
+        new_order = Orders(
+        lieferstatus = "storniert",
         items = serializedItems,
         preis = float(finalprice),
-        zahlungsstatus = "ausstehend",
+        zahlungsstatus = "abgebrochen",
         name = f"{user.vorname} {user.nachname}",
         adresse = user.adresse,
         kunde_id = userID,
@@ -402,6 +403,19 @@ def new_order():
         anmerkungen = request.form.get("anmerkungen"),
         postleitzahl = user.postleitzahl
     )
+    else:
+        new_order = Orders(
+            lieferstatus = "in Bearbeitung",
+            items = serializedItems,
+            preis = float(finalprice),
+            zahlungsstatus = "ausstehend",
+            name = f"{user.vorname} {user.nachname}",
+            adresse = user.adresse,
+            kunde_id = userID,
+            resto_id = restoID,
+            anmerkungen = request.form.get("anmerkungen"),
+            postleitzahl = user.postleitzahl
+        )
     db.session.add(new_order)
     db.session.commit()
     
