@@ -60,7 +60,7 @@ class Orders(db.Model):
     kunde_id = db.Column(db.Integer, nullable=False)
     resto_id = db.Column(db.Integer, nullable=False)
     anmerkungen = db.Column(db.Text, nullable = True)
-
+    postleitzahl = db.Column(db.Text, nullable=False)
 
 with app.app_context():
   db.create_all()
@@ -399,7 +399,8 @@ def new_order():
         adresse = user.adresse,
         kunde_id = userID,
         resto_id = restoID,
-        anmerkungen = request.form.get("anmerkungen")
+        anmerkungen = request.form.get("anmerkungen"),
+        postleitzahl = user.postleitzahl
     )
     db.session.add(new_order)
     db.session.commit()
