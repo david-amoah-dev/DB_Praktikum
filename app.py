@@ -163,8 +163,8 @@ def bestellansichtKunde():
                 value=Orders.lieferstatus),
         Orders.time.desc()
     ).all()
-    
-    return render_template('kunde_Bestellansicht.html', orders=orders)
+
+    return render_template('kunde_Bestellansicht.html', orders=orders, json=json)
 
 
 
@@ -181,12 +181,9 @@ def bestellansichtResto():
                 value=Orders.lieferstatus),
         Orders.time.desc()
     ).all()
-    
-    return render_template('resto_Bestellansicht.html', orders=orders)
-    orders = Orders.query.order_by(
-        # numbers to group orders by priority, time.desc() to sort by decending time after being grouped by their status
-        db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2},value=Orders.lieferstatus),Orders.time.desc()).all()
-    return render_template('resto_Bestellansicht.html', orders = orders)
+
+    return render_template('resto_Bestellansicht.html', orders=orders, json=json)
+
     
 @app.route('/restaurants', methods=["GET"])
 def CatchResto():

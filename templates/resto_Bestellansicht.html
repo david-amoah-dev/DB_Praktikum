@@ -233,12 +233,18 @@
             <tbody>
                 <tr>
                     <td>{{ order.lieferstatus }}</td>
-                    <td>{{ order.items }}</td>
-                    <td>{{ order.preis }}€</td>
-                    <td>{{ order.menge }}</td>
+                    <td> {% for item in json.loads(order.items) %}
+                        {{ item.name }}<br>
+                      {% endfor %}</td>
+                    <td>{% for item in json.loads(order.items) %}
+                        {{ item.name }}€<br>
+                      {% endfor %}</td>
+                    <td> {% for item in json.loads(order.items) %}
+                        {{ item.amount }}<br>
+                      {% endfor %}</td>
                     <td>{{ order.zahlungsstatus }}</td>
                     <td>{{ order.liefergebuehren }}€</td>
-                    <td>{{ order.gesamt }}€</td>
+                    <td>{{ order.preis }}€</td>
                 </tr>
             </tbody>
         </table>
