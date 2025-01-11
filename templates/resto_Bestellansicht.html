@@ -257,7 +257,7 @@
                 <h2><b>Kundendaten</b></h2>
             <!-- muss name adresse aus der order selbst nehmen -->
                 <p> {{ order.name }} </p>
-                <p> {{ order.adresse }}</p>
+                <p> {{ order.adresse }}, {{order.postleitzahl}} </p>
             </div>
             <div class="buttons">
                 <form method="POST" action="{{ url_for('decline_order', order_id=order.id) }}">
