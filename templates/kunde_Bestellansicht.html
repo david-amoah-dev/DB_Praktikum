@@ -232,12 +232,19 @@
             <tbody>
                 <tr>
                     <td>{{ order.lieferstatus }}</td>
-                    <td>{{ order.items }}</td>
-                    <td>{{ order.preis }}€</td>
-                    <td>{{ order.menge }}</td>
+                    <td> {% for item in json.loads(order.items) %}
+                        {{ item.name }}<br>
+                      {% endfor %}</td>
+                    <td>{% for item in json.loads(order.items) %}
+                        <!--"%.2f"|format für preise mit 2 nachkommastellen-->
+                        {{"%.2f"|format(item.price)}}€<br>
+                      {% endfor %}</td>
+                    <td> {% for item in json.loads(order.items) %}
+                        {{ item.amount }}<br>
+                      {% endfor %}</td>
                     <td>{{ order.zahlungsstatus }}</td>
                     <td>{{ order.liefergebuehren }}€</td>
-                    <td>{{ order.gesamt }}€</td>
+                    <td>{{ "%.2f"|format(order.preis) }}€</td>
                 </tr>
             </tbody>
         </table>
@@ -248,7 +255,7 @@
             <div class="customer-data"> 
                 <h2><b>Kundendaten</b></h2>
                 <p> {{ order.name }}</p>
-                <p> {{ order.adresse }} </p>
+                <p> {{ order.adresse }}, {{order.postleitzahl}}</p> 
             </div>
             <div class="buttons">
                 <form method="POST" action="{{ url_for('decline_order', order_id=order.id) }}">
@@ -270,13 +277,5 @@
     </div>
     {% endfor %}
 
-    <form action="{{ url_for('add_order') }}" method="post">
-        <input type="text" name="items" placeholder="Items" required>
-        <input type="number" step="0.01" name="preis" placeholder="Preis (€)" required>
-        <input type="number" name="menge" placeholder="Menge" required>
-        <input type="number" step="0.01" name="liefergebuehren" placeholder="Liefergebühren (€)" required>
-        <input type="text" name="anmerkungen" placeholder="Anmerkungen">
-        <button type="submit">Order hinzufügen</button>
-    </form>
 </body>
 </html>
