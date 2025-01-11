@@ -232,7 +232,7 @@
             <tbody>
                 <tr>
                     <td>{{ order.lieferstatus }}</td>
-                    <td>{{ order.items }}</td>
+                    <td>{{ json.loads(order.items) }}</td>
                     <td>{{ order.preis }}€</td>
                     <td>{{ order.menge }}</td>
                     <td>{{ order.zahlungsstatus }}</td>
