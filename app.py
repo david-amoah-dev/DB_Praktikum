@@ -29,6 +29,7 @@ class Resto(db.Model):
     password = db.Column(db.String(20), nullable = False)
     openTime = db.Column(db.String(), nullable = False)
     wallet = db.Column(db.Integer, nullable=False, default=200)
+    items=db.relationship('Item', backref='resto')
 
     def __repr__(self):
        return f"Resto('{self.name}')"
@@ -67,7 +68,7 @@ class Item(db.Model):
     itmname = db.Column(db.String(20), unique = False, nullable = True)
     description = db.Column(db.String(20), unique = False, nullable = True)
     price = db.Column(db.Integer(), nullable = True)
-    
+    restaurant_id= db.Column(db.Integer(), db.ForeignKey('resto.id'), nullable=False)
     
 
 with app.app_context():
@@ -147,10 +148,13 @@ def login():
             }
             return redirect(url_for('CatchResto'))#showa the restaurants if any available
         elif resto and resto.password == password:
-            user = {"id" : resto.id, "type" : "Resto", "plz" : resto.plz, "username" : resto.name}
-            session["user"] = user
-
-            return render_template('resgistersaghar.html', name=resto.name)
+            session['user'] = {
+                'id': resto.id,
+                'type': 'Resto',
+                'plz': resto.plz,
+                'adresse': resto.strasse
+            }
+            return render_template('add_Item.html' )
     else :
         return render_template('loginsaghar.html')
         
@@ -198,13 +202,15 @@ def itmadd():
         description = request.form.get("description")
         price = request.form.get("price")
         category = request.form.get("category")
+        resto=session['user']
+        restoId=resto['id']
 
         # create Item
-        new_item = Item(itmname = itmname,description = description,price = price,category = category)
+        new_item = Item(itmname = itmname,description = description,price = price, restaurant_id=restoId)
         print(f"Received: {itmname}, {description}, {price}, {category}")
         db.session.add(new_item)
         db.session.commit()
-    return redirect(url_for("rstrspkt"))
+    return redirect(url_for("restaurantItems"))
 
 @app.route("/delitm/<int:mid>", methods = ['GET','POST'])
 def delitm(mid):
@@ -392,11 +398,19 @@ def logout():
 
 
 #was man braucht um richtige restaurant seite hochzuladen(nur test)
-@app.route('/test/<int:restaurant_id>', methods=['GET', 'POST'])
-def test( restaurant_id):
+@app.route('/Menu/<int:restaurant_id>', methods=['GET', 'POST'])
+def Menu( restaurant_id):
     restaurant = Resto.query.get_or_404(restaurant_id)
+    items = Item.query.filter_by(restaurant_id=restaurant.id).all()
 
-    return render_template("test.html", restaurant=restaurant)
+    return render_template("menu.html", items=items)
+
+
+@app.route('/restaurantItems', methods=['GET','POST'])
+def restaurantItems():
+    restaurant=session['user']
+    items = Item.query.filter_by(restaurant_id=restaurant['id']).all()
+    return render_template("restoItems.html", items=items)
 
     
 if __name__ == '__main__':

@@ -23,7 +23,7 @@
         .resto {
             display:grid;
             grid-template-columns: 1fr 1fr;
-            background-color: rgb(216, 212, 209);
+            background-color: rgb(214, 139, 95);
             border-radius: 16px;
             height: 200px; /* Adjusted height */
             width: 400px; /* Adjusted width */
@@ -104,13 +104,9 @@
             <form action="{{ url_for('logout') }}" method="POST">
                 <button type="submit">Logout</button>
             </form>
-            <a href="{{ url_for('profile')}}">
-                <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
-            </a>
+            <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
 
-            <a href="{{ url_for('summary')}}">
-                <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
-            </a>
+            <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
         </div>
 
     </div>
@@ -130,10 +126,6 @@
                 <h2>{{ item.itmname }}</h2>
                 <p >{{ item.description }}</p>
                 <p><strong>preis:</strong><br> {{ item.price }}</p>
-                <div>
-                    <button>+</button>
-                    <button>-</button>
-                </div>
                 
             
             </div>
