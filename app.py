@@ -429,4 +429,4 @@ if __name__ == '__main__':
 
 # Item Ansicht in Bestellansicht updaten -> veränderte Tabellenstruktur Orders
 # Input session["Items"]
-# funktion add_order noch benötigt? was ist mit brauch man auch für resto gemeint?
+#Popup bei einkommender Bestellung oder weiterleitung an Bestellansicht?
