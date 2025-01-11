@@ -59,7 +59,7 @@ class Orders(db.Model):
     adresse = db.Column(db.Text, nullable=False) 
     kunde_id = db.Column(db.Integer, nullable=False)
     resto_id = db.Column(db.Integer, nullable=False)
-    ## anmerkungen = db.Column(db.Text, nullable = True)
+    anmerkungen = db.Column(db.Text, nullable = True)
 
 
 with app.app_context():
@@ -371,8 +371,8 @@ def summary():
 
     return render_template("summary.html", content = items, total = final)
 
-@app.route("/new_order/")
-def order():
+@app.route("/new_order/", methods=["POST"])
+def new_order():
     if not "user" in session:
         return redirect(url_for("login"))
     if not "items" in session:
@@ -402,7 +402,7 @@ def order():
         adresse = user.adresse,
         kunde_id = userID,
         resto_id = restoID,
-        ## Anmerkungen fehlen
+        anmerkungen = request.form.get("anmerkungen")
     )
     db.session.add(new_order)
     db.session.commit()
@@ -432,5 +432,4 @@ if __name__ == '__main__':
 
 # Item Ansicht in Bestellansicht updaten -> veränderte Tabellenstruktur Orders
 # Input session["Items"]
-# Bestellanischt Buttons annehmen/ablehnen not working as intended?
 # funktion add_order noch benötigt? was ist mit brauch man auch für resto gemeint?

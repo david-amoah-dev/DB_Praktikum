@@ -71,24 +71,29 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Bestellzusammenfassung</h1>
-        </div>
-        <div class="order-list">
-            {% for item in content %}
-            <div class="order-item">
-                <span class="item-name">{{item.name}}</span>
-                <span class="item-price">{{item.price}}</span>
-                <span class="item-amount">{{item.amount}}</span>
+    <form action="{{ url_for('new_order') }}" method="post">
+        <div class="container">
+            <div class="header">
+                <h1>Bestellzusammenfassung</h1>
             </div>
-            {% endfor %}
+            <div class="order-list">
+                {% for item in content %}
+                <div class="order-item">
+                    <span class="item-name">{{item.name}}</span>
+                    <span class="item-price">{{item.price}}</span>
+                    <span class="item-amount">{{item.amount}}</span>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="order-list">
+                <textarea class="order-item" placeholder="Anmerkungen" name="anmerkungen" rows="6" cols="73"></textarea>
+            </div>
+            <div class="summary">
+                <span>Gesamt</span>
+                <span class="total">{{total}} €</span>
+            </div>
+            <button type="submit" class="confirm-btn">Bestellung abschließen</button>
         </div>
-        <div class="summary">
-            <span>Gesamt</span>
-            <span class="total">{{total}} €</span>
-        </div>
-        <a href="/new_order/" class="confirm-btn">Bestellung abschließen</a>
-    </div>
+    </form>
 </body>
 </html>
