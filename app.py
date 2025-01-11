@@ -400,7 +400,7 @@ def new_order():
         adresse = user.adresse,
         kunde_id = userID,
         resto_id = restoID,
-        anmerkungen = request.form.get("anmerkungen"),
+        anmerkungen = "Geld unzureichend",
         postleitzahl = user.postleitzahl
     )
     else:
