@@ -59,8 +59,8 @@ class Orders(db.Model):
     adresse = db.Column(db.Text, nullable=False) 
     kunde_id = db.Column(db.Integer, nullable=False)
     resto_id = db.Column(db.Integer, nullable=False)
-    #restaurant id beinhalten
-    
+    ## anmerkungen = db.Column(db.Text, nullable = True)
+
 
 with app.app_context():
   db.create_all()
@@ -152,14 +152,37 @@ def login():
 @app.route('/bestellansichtKunde', methods =["GET", "POST"])
 def bestellansichtKunde():
 
-    orders = Orders.query.order_by(
-        # numbers to group orders by priority, time.desc() to sort by decending time after being grouped by their status
-        db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2},value=Orders.lieferstatus),Orders.time.desc()).all()
-    return render_template('resto_Bestellansicht.html', orders = orders)
+    if 'user' not in session or session['user']['type'] != 'Kunde':
+        return redirect(url_for('login'))
+
+    kunde_id = session['user']['id']
+
+    # Query orders specific to the logged-in customer, ordered by priority and time
+    orders = Orders.query.filter_by(kunde_id=kunde_id).order_by(
+        db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2}, 
+                value=Orders.lieferstatus),
+        Orders.time.desc()
+    ).all()
+    
+    return render_template('kunde_Bestellansicht.html', orders=orders)
+
+
 
 @app.route('/bestellansichtResto', methods =["GET", "POST"])
 def bestellansichtResto():
+    if 'user' not in session or session['user']['type'] != 'Resto':
+        return redirect(url_for('login'))
 
+    resto_id = session['user']['id']
+
+    # Query orders specific to the logged-in customer, ordered by priority and time
+    orders = Orders.query.filter_by(resto_id=resto_id).order_by(
+        db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2}, 
+                value=Orders.lieferstatus),
+        Orders.time.desc()
+    ).all()
+    
+    return render_template('resto_Bestellansicht.html', orders=orders)
     orders = Orders.query.order_by(
         # numbers to group orders by priority, time.desc() to sort by decending time after being grouped by their status
         db.case({"in Bearbeitung": 1, "in Zubereitung": 1, "abgeschlossen": 2, "storniert": 2},value=Orders.lieferstatus),Orders.time.desc()).all()
@@ -249,7 +272,7 @@ def decline_order(order_id):
     order.lieferstatus = "storniert" 
     order.zahlungsstatus = "abgebrochen"
     db.session.commit()
-    return redirect(url_for('bestellansicht'))
+    return redirect(request.referrer)
 @app.route('/order/<int:order_id>/accept', methods=['POST'])
 def accept_order(order_id):
     order = Orders.query.get_or_404(order_id)
@@ -272,13 +295,13 @@ def accept_order(order_id):
     order.lieferstatus = "in Zubereitung" 
     order.zahlungsstatus = "abgeschlossen"
     db.session.commit()
-    return redirect(url_for('bestellansicht'))
+    return redirect(request.referrer)
 @app.route('/order/<int:order_id>/finished', methods=['POST'])
 def finished_order(order_id):
     order = Orders.query.get_or_404(order_id)
     order.lieferstatus = "abgeschlossen" 
     db.session.commit()
-    return redirect(url_for('bestellansicht'))
+    return redirect(request.referrer)
 
 
 @app.route('/add_order', methods=["POST"])
@@ -378,7 +401,8 @@ def order():
         name = f"{user.vorname} {user.nachname}",
         adresse = user.adresse,
         kunde_id = userID,
-        resto_id = restoID
+        resto_id = restoID,
+        ## Anmerkungen fehlen
     )
     db.session.add(new_order)
     db.session.commit()
