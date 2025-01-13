@@ -62,6 +62,17 @@ class Orders(db.Model):
     anmerkungen = db.Column(db.Text, nullable = True)
     postleitzahl = db.Column(db.Text, nullable=False)
 
+############## item Tabelle mit restaurantid
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    itmname = db.Column(db.String(20), unique = False, nullable = True)
+    description = db.Column(db.String(20), unique = False, nullable = True)
+    price = db.Column(db.Integer(), nullable = True)
+    # bild = db.Column()
+    category = db.Column(db.String(), nullable=True)
+    restoid = db.Column(db.Integer, nullable=False)
+###############
+
 with app.app_context():
   db.create_all()
 
@@ -435,6 +446,77 @@ def test( restaurant_id):
 
     return render_template("test.html", restaurant=restaurant)
 
+#############################################
+#ansicht der details zu dem ausgewählten restaurant (also die Speisekarte)
+@app.route("/cstmrstdtl/<int:restaurant_id>", methods=['GET'])
+def cstmrstdtl(restaurant_id):
+    items = db.session.execute(db.select(Item).filter_by(restoid = restaurant_id)).scalars()
+    restaurant = Resto.query.get_or_404(restaurant_id)
+    return render_template('CustomerView-RestaurantDetails.html', items=items, restaurant=restaurant)
+
+#ansicht des eingeloggten restaurants zum bearbeiten der eigenen Restaurant Speisekarte
+@app.route("/rstrspkt/<int:restaurant_id>", methods=['GET'])
+def rstrspkt(restaurant_id):
+    items = db.session.execute(db.select(Item).filter_by(restoid = restaurant_id)).scalars()
+    restaurant = Resto.query.get_or_404(restaurant_id)
+    return render_template('RestaurantView-Speisekarte.html', items=items, restaurant=restaurant)
+
+# Item hinzufügen zu der Speisekarte des jeweiligen restaurants
+@app.route("/itmadd/<int:restaurant_id>", methods = ['GET','POST'])
+def itmadd(restaurant_id):
+    restaurant = Resto.query.get_or_404(restaurant_id)
+    if request.method == "POST":
+        itmname = request.form.get("itemname")
+        description = request.form.get("description")
+        price = request.form.get("price")
+        category = request.form.get("category")
+
+        # create Item
+        new_item = Item(itmname = itmname,description = description,price = price,category = category, restoid = restaurant_id)
+        print(f"Received: {itmname}, {description}, {price}, {category}")
+        db.session.add(new_item)
+        db.session.commit()
+    return redirect(url_for("rstrspkt", restaurant_id = restaurant_id))
+
+# löschen eines items aus der Speisekarte
+@app.route("/delitm/<int:mid>", methods = ['GET','POST'])
+def delitm(mid):
+    item = db.session.execute(db.select(Item).filter_by(id = mid)).scalar_one()
+    db.session.delete(item)
+    db.session.commit()
+    return redirect(url_for("rstrspkt", restaurant_id = item.restoid))
+
+# ändern eines items aus der Speisekarte
+@app.route("/upditm//<int:updid>", methods = ['GET','POST'])
+def upditm(updid):
+    item = db.session.execute(db.select(Item).filter_by(id = updid)).scalar_one()
+    if request.method == "POST":
+        upitmname = request.form.get("upitemname")
+        updescription = request.form.get("updescription")
+        upprice = request.form.get("upprice")
+        upcategory = request.form.get("upcategory")
+
+        # update Item
+
+        updated_item = Item.query.get_or_404(updid)
+
+        updated_item.itmname = upitmname
+        updated_item.description = updescription
+        updated_item.price = upprice
+        updated_item.category = upcategory
+
+        print(f"Received: {upitmname}, {updescription}, {upprice}, {upcategory}")
+        #db.session.update(item)
+        db.session.commit()
+    return redirect(url_for("rstrspkt", restaurant_id= item.restoid))
+
+# Hochladen von Bildern (an diesem teil muss noch gearbeitet werden)
+@app.route("/upload/", methods = ['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['']
+        f.save('/static/images/')
+###############################################
     
 if __name__ == '__main__':
     app.run(debug=True)
