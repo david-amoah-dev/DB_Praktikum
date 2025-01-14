@@ -23,7 +23,18 @@
         .resto {
             display:grid;
             grid-template-columns: 1fr 1fr;
-            background-color: rgb(214, 139, 95);
+            background-color: rgb(139, 138, 137);
+            border-radius: 16px;
+            height: 200px; /* Adjusted height */
+            width: 400px; /* Adjusted width */
+        }
+
+        .edit {
+            display:flex;
+            justify-content: center; /* Centers horizontally */
+            align-items: center; 
+            width: 100%;
+            background-color: rgb(195, 192, 190);
             border-radius: 16px;
             height: 200px; /* Adjusted height */
             width: 400px; /* Adjusted width */
@@ -50,14 +61,16 @@
     
         .box {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            column-gap: 2px;
+            grid-template-columns: repeat(2, 1fr);
+            column-gap: 1px;
             gap: 20px;
             justify-items: center;
             border-radius: 16px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 10px;
             margin: 10px;
+            margin-left: 200px;
+            margin-right: 200px;
             background-color: rgb(255, 255, 255);
 
 
@@ -114,23 +127,31 @@
 
 
 
-    <h2 style="color: #025252; margin: 10px;">GEÖFFNETE RESTAURANTS</h2>
+    <h2 style="color: #025252; margin: 10px;">menü</h2>
     <div class="box">
-        {% for restaurant in restaurants %}
-        <a href="{{ url_for('Menu', restaurant_id=restaurant.id) }}">
+        {% for item in items %}
+    
         <div class="resto" >
             <div>
                 <img src="{{ url_for('static', filename='images/not-available.png') }} ">
             </div>
             <div>
-                <h2>{{ restaurant.name }}</h2>
-                <p >{{ restaurant.beschreibung }}</p>
-                <p><strong>Öffnungszeiten:</strong><br> {{ restaurant.openTime }}</p>
+                <h2>{{ item.itmname }}</h2>
+                <p >{{ item.description }}</p>
+                <p><strong>preis:</strong><br> {{ item.price }}</p>
+                
             
             </div>
         </div>
-        </a>
         {% endfor %}
+        
+        <div class="edit" >
+            
+            <h1>+</h1>
+        
+                
+                
+        </div>
     </div>
 </body>
 </html> 	

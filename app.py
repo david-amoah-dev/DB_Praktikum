@@ -62,6 +62,14 @@ class Orders(db.Model):
     anmerkungen = db.Column(db.Text, nullable = True)
     postleitzahl = db.Column(db.Text, nullable=False)
 
+
+class Item(db.Model):
+    id = db.Column(db.Integer, primary_key = True)
+    itmname = db.Column(db.String(20), unique = False, nullable = True)
+    description = db.Column(db.String(20), unique = False, nullable = True)
+    price = db.Column(db.Integer(), nullable = True)
+    restaurant_id= db.Column(db.Integer(), db.ForeignKey('resto.id'), nullable=False)
+
 with app.app_context():
   db.create_all()
 
@@ -137,12 +145,15 @@ def login():
                 'plz': kunde.postleitzahl,
                 'username': kunde.nachname
             }
-            return redirect(url_for('bestellansichtKunde'))#showa the restaurants if any available
+            return redirect(url_for('CatchResto'))#showa the restaurants if any available
         elif resto and resto.password == password:
-            user = {"id" : resto.id, "type" : "Resto", "plz" : resto.plz, "username" : resto.name}
-            session["user"] = user
-
-            return render_template('resgistersaghar.html', name=resto.name)
+            session['user'] = {
+                'id': resto.id,
+                'type': 'Resto',
+                'plz': resto.plz,
+                'adresse': resto.strasse
+            }
+            return redirect(url_for('restaurantItems') )
     else :
         return render_template('loginsaghar.html')
         
@@ -421,6 +432,9 @@ def new_order():
     
     return redirect(url_for("bestellansichtKunde"))
 
+
+
+
 @app.route('/logout', methods=['POST'])
 def logout():
     # Clear all session data
@@ -429,11 +443,20 @@ def logout():
 
 
 #was man braucht um richtige restaurant seite hochzuladen(nur test)
-@app.route('/test/<int:restaurant_id>', methods=['GET', 'POST'])
-def test( restaurant_id):
+@app.route('/Menu/<int:restaurant_id>', methods=['GET', 'POST'])
+def Menu( restaurant_id):
     restaurant = Resto.query.get_or_404(restaurant_id)
+    items = Item.query.filter_by(restaurant_id=restaurant.id).all()
 
-    return render_template("test.html", restaurant=restaurant)
+    return render_template("menu.html", items=items)
+
+
+@app.route('/restaurantItems', methods=['GET','POST'])
+def restaurantItems():
+    restaurant=session['user']
+    items = Item.query.filter_by(restaurant_id=restaurant['id']).all()
+    return render_template("restoItems.html", items=items)
+
 
     
 if __name__ == '__main__':
