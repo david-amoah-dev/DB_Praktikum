@@ -63,7 +63,6 @@
         .profile {
             background: lightgray;
             margin-right: 10px;
-            
         }
         .warenkorb {
             background: url('/static/images/Warenkorb.png') lightgray 50% / cover no-repeat;
@@ -201,13 +200,11 @@
 </head>
 <body>
     <header>
-        <!--CatchResto noch, da Speisekarte fehlt-->
-        <a href="{{ url_for('CatchResto') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo">
         <button type="button" class="btn search"><b>Search</b></button>     
         <div class="right-header">
-            <a href="{{ url_for('profile') }}" class="btn profile">Profil</a>
-
-            <!-- <a href="{{ url_for('summary') }}" class="btn warenkorb"></a> -->
+            <button type="button" class="btn profile">Profil</button>
+            <button type="button" class="btn warenkorb"></button>
         </div>
     </header>
     <header2>
@@ -229,6 +226,7 @@
                     <th>Preis</th>
                     <th>Menge</th>
                     <th>Zahlungsstatus</th>
+                    <th>Liefergebühren</th>
                     <th>Gesamt</th>
                 </tr>
             </thead>
@@ -246,6 +244,7 @@
                         {{ item.amount }}<br>
                       {% endfor %}</td>
                     <td>{{ order.zahlungsstatus }}</td>
+                    <td>{{ order.liefergebuehren }}€</td>
                     <td>{{ "%.2f"|format(order.preis) }}€</td>
                 </tr>
             </tbody>
@@ -279,5 +278,5 @@
         </div>
     </div>
     {% endfor %}
-    <script src="{{ url_for('static', filename='alert.js') }}"></script>
+
 </html>
