@@ -191,7 +191,6 @@ def logout():
     session.pop("username", None)
     return redirect(url_for("index"))
 
-<<<<<<< HEAD
 # ________________profile____________
 @app.route("/profile/") #important to look at # should work now
 def profile():
@@ -275,9 +274,6 @@ def summary():
     return render_template("summary.html", content = items, total = final)
 
 
-
-=======
->>>>>>> 1e7d735 (löschung)
 #-----------------------------------------------------------------------------------
 
 if __name__ == '__main__':

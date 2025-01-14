@@ -5,6 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime, timezone
 import json
 
+
 class Base(DeclarativeBase):
   pass
 
@@ -487,7 +488,7 @@ def delitm(mid):
     return redirect(url_for("rstrspkt", restaurant_id = item.restoid))
 
 # ändern eines items aus der Speisekarte
-@app.route("/upditm//<int:updid>", methods = ['GET','POST'])
+@app.route("/upditm/<int:updid>", methods = ['GET','POST'])
 def upditm(updid):
     item = db.session.execute(db.select(Item).filter_by(id = updid)).scalar_one()
     if request.method == "POST":
