@@ -5,6 +5,7 @@ from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime, timezone
 import json
 
+
 class Base(DeclarativeBase):
   pass
 
@@ -61,7 +62,6 @@ class Orders(db.Model):
     resto_id = db.Column(db.Integer, nullable=False)
     anmerkungen = db.Column(db.Text, nullable = True)
     postleitzahl = db.Column(db.Text, nullable=False)
-
 
 class Item(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -442,22 +442,93 @@ def logout():
     return redirect(url_for('login'))  # Redirect to login page after logout
 
 
-#was man braucht um richtige restaurant seite hochzuladen(nur test)
-@app.route('/Menu/<int:restaurant_id>', methods=['GET', 'POST'])
-def Menu( restaurant_id):
+# #was man braucht um richtige restaurant seite hochzuladen(nur test)
+# @app.route('/Menu/<int:restaurant_id>', methods=['GET', 'POST'])
+# def Menu( restaurant_id):
+#     restaurant = Resto.query.get_or_404(restaurant_id)
+#     items = Item.query.filter_by(restaurant_id=restaurant.id).all()
+
+#     return render_template("menu.html", items=items)
+
+
+# @app.route('/restaurantItems', methods=['GET','POST'])
+# def restaurantItems():
+#     restaurant=session['user']
+#     items = Item.query.filter_by(restaurant_id=restaurant['id']).all()
+#     return render_template("restoItems.html", items=items)
+
+
+#############################################
+#ansicht der details zu dem ausgewählten restaurant (also die Speisekarte)
+@app.route("/cstmrstdtl/<int:restaurant_id>", methods=['GET'])
+def cstmrstdtl(restaurant_id):
+    items = db.session.execute(db.select(Item).filter_by(restoid = restaurant_id)).scalars()
     restaurant = Resto.query.get_or_404(restaurant_id)
-    items = Item.query.filter_by(restaurant_id=restaurant.id).all()
+    return render_template('CustomerView-RestaurantDetails.html', items=items, restaurant=restaurant)
 
-    return render_template("menu.html", items=items)
+#ansicht des eingeloggten restaurants zum bearbeiten der eigenen Restaurant Speisekarte
+@app.route("/rstrspkt/<int:restaurant_id>", methods=['GET'])
+def rstrspkt(restaurant_id):
+    items = db.session.execute(db.select(Item).filter_by(restoid = restaurant_id)).scalars()
+    restaurant = Resto.query.get_or_404(restaurant_id)
+    return render_template('RestaurantView-Speisekarte.html', items=items, restaurant=restaurant)
 
+# Item hinzufügen zu der Speisekarte des jeweiligen restaurants
+@app.route("/itmadd/<int:restaurant_id>", methods = ['GET','POST'])
+def itmadd(restaurant_id):
+    restaurant = Resto.query.get_or_404(restaurant_id)
+    if request.method == "POST":
+        itmname = request.form.get("itemname")
+        description = request.form.get("description")
+        price = request.form.get("price")
+        category = request.form.get("category")
 
-@app.route('/restaurantItems', methods=['GET','POST'])
-def restaurantItems():
-    restaurant=session['user']
-    items = Item.query.filter_by(restaurant_id=restaurant['id']).all()
-    return render_template("restoItems.html", items=items)
+        # create Item
+        new_item = Item(itmname = itmname,description = description,price = price,category = category, restoid = restaurant_id)
+        print(f"Received: {itmname}, {description}, {price}, {category}")
+        db.session.add(new_item)
+        db.session.commit()
+    return redirect(url_for("rstrspkt", restaurant_id = restaurant_id))
 
+# löschen eines items aus der Speisekarte
+@app.route("/delitm/<int:mid>", methods = ['GET','POST'])
+def delitm(mid):
+    item = db.session.execute(db.select(Item).filter_by(id = mid)).scalar_one()
+    db.session.delete(item)
+    db.session.commit()
+    return redirect(url_for("rstrspkt", restaurant_id = item.restoid))
 
+# ändern eines items aus der Speisekarte
+@app.route("/upditm/<int:updid>", methods = ['GET','POST'])
+def upditm(updid):
+    item = db.session.execute(db.select(Item).filter_by(id = updid)).scalar_one()
+    if request.method == "POST":
+        upitmname = request.form.get("upitemname")
+        updescription = request.form.get("updescription")
+        upprice = request.form.get("upprice")
+        upcategory = request.form.get("upcategory")
+
+        # update Item
+
+        updated_item = Item.query.get_or_404(updid)
+
+        updated_item.itmname = upitmname
+        updated_item.description = updescription
+        updated_item.price = upprice
+        updated_item.category = upcategory
+
+        print(f"Received: {upitmname}, {updescription}, {upprice}, {upcategory}")
+        #db.session.update(item)
+        db.session.commit()
+    return redirect(url_for("rstrspkt", restaurant_id= item.restoid))
+
+# Hochladen von Bildern (an diesem teil muss noch gearbeitet werden)
+@app.route("/upload/", methods = ['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['']
+        f.save('/static/images/')
+###############################################
     
 if __name__ == '__main__':
     app.run(debug=True)
