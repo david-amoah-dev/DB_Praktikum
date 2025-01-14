@@ -518,7 +518,32 @@ def upload_file():
         f = request.files['']
         f.save('/static/images/')
 ###############################################
+
+@app.route("/check_new_orders")
+def check_new_orders():
+    if 'user' not in session or session['user']['type'] != 'Resto':
+        return {"new_order": False, "latest_order_id": None}
     
+    resto_id = session['user']['id']
+    latest_order = Orders.query.filter_by(resto_id=resto_id).order_by(Orders.time.desc()).first()
+    # new_order = Orders(
+    #     lieferstatus="in Bearbeitung",
+    #     items='[{"name": "Pizza", "price": 12, "amount": 1}]',
+    #     preis=12.0,
+    #     zahlungsstatus="ausstehend",
+    #     name="John Doe",
+    #     adresse="123 Street",
+    #     kunde_id=1,
+    #     resto_id=1,
+    #     postleitzahl="12345")
+
+    # db.session.add(new_order)
+    # db.session.commit()
+    if latest_order and latest_order.lieferstatus == "in Bearbeitung":
+        return {"new_order": True, "latest_order_id": latest_order.id}
+
+    return {"new_order": False, "latest_order_id": None}
+
 if __name__ == '__main__':
     app.run(debug=True)
 
