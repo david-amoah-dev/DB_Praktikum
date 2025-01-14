@@ -149,12 +149,12 @@ def login():
                 'plz': kunde.postleitzahl,
                 'username': kunde.nachname
             }
-            return redirect(url_for('bestellansichtKunde'))#showa the restaurants if any available
+            return redirect(url_for('CatchResto'))#showa the restaurants if any available
         elif resto and resto.password == password:
             user = {"id" : resto.id, "type" : "Resto", "plz" : resto.plz, "username" : resto.name}
             session["user"] = user
 
-            return render_template('resgistersaghar.html', name=resto.name)
+            return redirect(url_for('rstrspkt', restaurant_id = resto.id))
     else :
         return render_template('loginsaghar.html')
         
@@ -449,14 +449,14 @@ def test( restaurant_id):
 
 #############################################
 #ansicht der details zu dem ausgewählten restaurant (also die Speisekarte)
-@app.route("/cstmrstdtl/<int:restaurant_id>", methods=['GET'])
+@app.route("/cstmrstdtl/<int:restaurant_id>", methods=['GET', 'POST'])
 def cstmrstdtl(restaurant_id):
     items = db.session.execute(db.select(Item).filter_by(restoid = restaurant_id)).scalars()
     restaurant = Resto.query.get_or_404(restaurant_id)
     return render_template('CustomerView-RestaurantDetails.html', items=items, restaurant=restaurant)
 
 #ansicht des eingeloggten restaurants zum bearbeiten der eigenen Restaurant Speisekarte
-@app.route("/rstrspkt/<int:restaurant_id>", methods=['GET'])
+@app.route("/rstrspkt/<int:restaurant_id>", methods=['GET', 'POST'])
 def rstrspkt(restaurant_id):
     items = db.session.execute(db.select(Item).filter_by(restoid = restaurant_id)).scalars()
     restaurant = Resto.query.get_or_404(restaurant_id)
