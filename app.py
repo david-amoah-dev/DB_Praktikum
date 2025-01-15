@@ -312,7 +312,7 @@ def finished_order(order_id):
     db.session.commit()
     return redirect(request.referrer)
 
-
+# delete this
 @app.route('/add_order', methods=["POST"])
 def add_order():
     name = "unknown"
@@ -360,25 +360,32 @@ def add_order():
 @app.route("/summary/")
 def summary():
     # to do change to get items from session
-    item1 = {"name" : "Name1", "description" : "Text1", "price" : 1.20, "amount" : 5, "restoID" : 1}
-    item2 = {"name" : "Name2", "description" : "Text2", "price" : 2.20, "amount" : 4, "restoID" : 1}
-    item3 = {"name" : "Name3", "description" : "Text3", "price" : 3.20, "amount" : 3, "restoID" : 1}
-    items = [item1, item2, item3]
-    session["items"] = items
+    #item1 = {"name" : "Name1", "description" : "Text1", "price" : 1.20, "amount" : 5, "restoID" : 1}
+    #item2 = {"name" : "Name2", "description" : "Text2", "price" : 2.20, "amount" : 4, "restoID" : 1}
+    #item3 = {"name" : "Name3", "description" : "Text3", "price" : 3.20, "amount" : 3, "restoID" : 1}
+    #items = [item1, item2, item3]
+    #session["items"] = items
 
     if not "user" in session:
         return redirect(url_for("login"))
-#   if not "items" in session:
-#       return redirect(url_for("index"))
-#   items = session["items"]
+    if not "items" in session:
+        return redirect(url_for("login"))
+    items_dict = session["items"]
+
+    
+
+    
+    
+    #session["items"] = items_dict 
 
     # calculate price 
     total = 0.0
-    for elem in items:
-        total += elem["price"] * elem["amount"]
+    for elem in items_dict:
+        total += float(elem["price"]) * int(elem["amount"])
+        
     final = f"{total:.2f}"
 
-    return render_template("summary.html", content = items, total = final)
+    return render_template("summary.html", content = items_dict, total = final)
 
 @app.route("/new_order/", methods=["POST"])
 def new_order():
@@ -396,7 +403,7 @@ def new_order():
     # calculate price
     total = 0.0
     for elem in items:
-        total += elem["price"] * elem["amount"]
+        total += float(elem["price"]) * int(elem["amount"])
     finalprice = f"{total:.2f}"
 
     # serialize Items
@@ -433,7 +440,7 @@ def new_order():
     
     return redirect(url_for("bestellansichtKunde"))
 
-@app.route('/logout', methods=['POST'])
+@app.route('/logout', methods=['GET', 'POST'])
 def logout():
     # Clear all session data
     session.clear()  # This clears the entire session
@@ -544,12 +551,34 @@ def check_new_orders():
 
     return {"new_order": False, "latest_order_id": None}
 
+@app.route("/submit_cart", methods=["POST"])
+def submit_cart():
+    # Get the JSON data from the request
+    cart_data = request.get_json()
+    
+    # format data to dicts in array
+    items_dict = []
+    for elem in cart_data:
+        temp = {
+            "name" : elem[0],
+            "description" : elem[1],
+            "price" : float(elem[2]),
+            "amount" : elem[3],
+            "restoID" : elem[4]
+        }
+        items_dict += [temp]
+    session["items"] = items_dict
+    return redirect(url_for("summary"))
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
 
 
 
 
-# Item Ansicht in Bestellansicht updaten -> veränderte Tabellenstruktur Orders
-# Input session["Items"]
-#Popup bei einkommender Bestellung oder weiterleitung an Bestellansicht?
+# redirect nach login kunde
+# item price type float
+# logout func
+# delete profile_alternative.html
