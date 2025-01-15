@@ -40,8 +40,8 @@
         <h4>{{x.itmname}}</h4>
         <p>{{x.description}}</p>
         <p><b>{{x.price}}</b></p>
-        <button class="editbtn" type="button" onclick=showUpdateItemD()>edit</button>
-        <a href="{{ url_for('delitm', mid=x.id) }}">delete</a>
+        <button class="editbtn" type="button" onclick=showUpdateItemD({{x.id}})>edit</button>
+        <a href="{{ url_for('delitm', mid=x.id, restaurant_id=x.restoid) }}">delete</a>
     </div>
 </div>
 
@@ -49,16 +49,16 @@
 
 
 <!-- __________________________________Popup update Item____________________________________________________ -->
-<dialog id="updateItem">
-        <h3> Update {{x.itmname}} </h3>
-        <form action="{{ url_for('upditm', updid=x.id) }}" method="post">
+<dialog id="{{x.id}}">
+        <form action="{{ url_for('upditm', updid=x.id) }}" method="post" enctype="multipart/form-data">
+            <h3> Update {{x.itmname}} </h3>
             <input id="upitemname" name="upitemname" type="text" placeholder="{{x.itmname}}"}>Name</input><br><br>
             <input id="updescription" name="updescription" type="text">Description</input><br><br>
             <input id="upprice" name="upprice" type="number">Price</input><br><br>
-            <input type="image">Image</input><br><br>
+            <input type="file" name="file" accept="image/*" action="{{ url_for('upload_file') }}" >Image</input><br><br>
             <input id="upcategory" name="upcategory" type="text">Category</input><br><br>
             <button type="submit" onclick=displayNewCard()>Submit</button>
-            <button type="button" onclick=closeUpdateItemD()>Cancel</button>
+            <button type="button" onclick=closeUpdateItemD({{x.id}})>Cancel</button>
         </form>
 </dialog>
 
@@ -67,26 +67,20 @@
 <!-- __________________________________Popup add new Item___________________________________________________ -->
 <dialog id="createItem">
         <h3> New Item </h3>
-        <form action="{{ url_for('itmadd') }}" method="post">
+        <form action="{{ url_for('itmadd', restaurant_id = restaurant.id) }}" method="post" enctype="multipart/form-data">
             <input id="itemname" name="itemname" type="text">Name</input><br><br>
             <input id="description" name="description" type="text">Description</input><br><br>
             <input id="price" name="price" type="number">Price</input><br><br>
-            <input type="image">Image</input><br><br>
+            <input type="file" name="file" accept="image/*" action="{{ url_for('upload_file') }}">Image</input><br><br>
             <input id="category" name="category" type="text">Category</input><br><br>
             <button type="submit" onclick=displayNewCard()>Submit</button>
             <button type="button" onclick=closeCreateItemD()>Cancel</button>
         </form>
 </dialog>
 
-<!-- ______________Sidebar mit Kategorien als Menüpunkte (Will need jinja for loop for categories with menu as default value on top)_____________________ -->
-<div class="sidenav column">
-    <a href="#C1">Menü</a>
-</div>
-
 <!-- ___________________________________________________________________Temporal JavaScript______________________________________________________________ -->
 <script>
 const dialog = document.getElementById("createItem");
-const updialog = document.getElementById("updateItem");
 
 function showCreateItemD() {
     dialog.showModal();
@@ -96,9 +90,11 @@ function closeCreateItemD() {
 }
 
 function showUpdateItemD(x) {
+    let updialog = document.getElementById(x)
     updialog.showModal();
 }
-function closeUpdateItemD() {
+function closeUpdateItemD(x) {
+    let updialog = document.getElementById(x)
     updialog.close();
 }
 
