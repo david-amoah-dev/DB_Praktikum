@@ -4,6 +4,7 @@ from sqlalchemy import DateTime
 from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime, timezone
 from werkzeug.utils import secure_filename
+from base64 import b64encode
 import os
 import json
 
@@ -77,7 +78,7 @@ class Item(db.Model):
     itmname = db.Column(db.String(20), unique = False, nullable = True)
     description = db.Column(db.String(20), unique = False, nullable = True)
     price = db.Column(db.Integer(), nullable = True)
-    # bild = db.Column()
+    image = db.Column(db.String(),nullable=True)
     category = db.Column(db.String(), nullable=True)
     restoid = db.Column(db.Integer, nullable=False)
 ###############
@@ -498,10 +499,11 @@ def itmadd(restaurant_id):
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
 
         # create Item
-        new_item = Item(itmname = itmname,description = description,price = price,category = category, restoid = restaurant_id)
+        new_item = Item(itmname = itmname,description = description,price = price,image = file_path, category = category, restoid = restaurant_id)
         print(f"Received: {itmname}, {description}, {price}, {category}")
         db.session.add(new_item)
         db.session.commit()
@@ -536,7 +538,8 @@ def upditm(updid):
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
 
         # update Item
         updated_item = Item.query.get_or_404(updid)
@@ -545,6 +548,7 @@ def upditm(updid):
         updated_item.description = updescription
         updated_item.price = upprice
         updated_item.category = upcategory
+        updated_item.image = file_path
 
         print(f"Received: {upitmname}, {updescription}, {upprice}, {upcategory}")
         #db.session.update(item)

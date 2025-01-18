@@ -38,11 +38,12 @@
 {% for x in items %}
 <div class="columnright">
 <div class="card">
-    <img src="{{ url_for('static', filename='images/burgermenu.jpg')}}" style="width:100%">
+    <img src="/{{x.image}}" style="width:100%">
     <div class="container">
         <h4>{{x.itmname}}</h4>
         <p>{{x.description}}</p>
         <p><b>{{x.price}}</b></p>
+        <p><b>{{x.image}}</b></p>
         <button class="editbtn" type="button" onclick=showUpdateItemD({{x.id}})>edit</button>
         <a href="{{ url_for('delitm', mid=x.id, restaurant_id=x.restoid) }}">delete</a>
     </div>
@@ -58,7 +59,7 @@
             <input id="upitemname" name="upitemname" type="text" placeholder="{{x.itmname}}"}>Name</input><br><br>
             <input id="updescription" name="updescription" type="text">Description</input><br><br>
             <input id="upprice" name="upprice" type="number">Price</input><br><br>
-            <input type="file" name="image_file" accept="image/*" action="{{ url_for('upload_file') }}" >Image</input><br><br>
+            <input type="file" name="image_file" accept="image/*">Image</input><br><br>
             <input id="upcategory" name="upcategory" type="text">Category</input><br><br>
             <button type="submit" onclick=displayNewCard()>Submit</button>
             <button type="button" onclick=closeUpdateItemD({{x.id}})>Cancel</button>
@@ -74,7 +75,7 @@
             <input id="itemname" name="itemname" type="text">Name</input><br><br>
             <input id="description" name="description" type="text">Description</input><br><br>
             <input id="price" name="price" type="number">Price</input><br><br>
-            <input type="file" name="file" accept="image/*" action="{{ url_for('upload_file') }}">Image</input><br><br>
+            <input type="file" name="file" accept="image/*">Image</input><br><br>
             <input id="category" name="category" type="text">Category</input><br><br>
             <button type="submit" onclick=displayNewCard()>Submit</button>
             <button type="button" onclick=closeCreateItemD()>Cancel</button>
