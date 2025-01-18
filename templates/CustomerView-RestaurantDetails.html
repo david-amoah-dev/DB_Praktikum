@@ -28,9 +28,16 @@
 <h1 class="head">Speisekarte</h1>
 <h3 id="C1" class="head">Menü</h3>
 
+<p>{{restaurant.name}}</p>
+<p>{{restaurant.strasse}}</p>
+<p>{{restaurant.plz}}</p>
+<p>{{restaurant.beschreibung}}</p>
+<p>{{restaurant.opentime}}</p>
+
+
 {% for x in items %}
 <div class="card">
-    <img src="{{ url_for('static', filename='images/burgermenu.jpg')}}" style="width:100%">
+    <img src="/{{x.image}}" style="width:100%">
     <div class="container">
         <h4 id="itmhead_{{loop.index}}">{{x.itmname}}</h4>
         <p id="itmdesc_{{loop.index}}">{{x.description}}</p>
