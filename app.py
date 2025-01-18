@@ -1,10 +1,14 @@
-from flask import Flask, redirect, render_template, request, url_for, session
+from flask import Flask, flash, redirect, render_template, request, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import DateTime
 from sqlalchemy.orm import DeclarativeBase
 from datetime import datetime, timezone
+from werkzeug.utils import secure_filename
+import os
 import json
 
+UPLOAD_FOLDER = 'static/images'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 class Base(DeclarativeBase):
   pass
@@ -16,11 +20,15 @@ app = Flask(__name__)
 # configure the SQLite database, relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project2.db"
 app.config['STATIC_FOLDER'] = 'static'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.secret_key = 'someKey'  # This is just an example, do not use simple keys like this in production
 
 # initialize the app with the extension
 db.init_app(app)
 
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
 
 class Resto(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -479,6 +487,19 @@ def itmadd(restaurant_id):
         price = request.form.get("price")
         category = request.form.get("category")
 
+        #upload file
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # If the user does not select a file, the browser submits an empty file without a filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
         # create Item
         new_item = Item(itmname = itmname,description = description,price = price,category = category, restoid = restaurant_id)
         print(f"Received: {itmname}, {description}, {price}, {category}")
@@ -504,8 +525,20 @@ def upditm(updid):
         upprice = request.form.get("upprice")
         upcategory = request.form.get("upcategory")
 
-        # update Item
+        #upload file
+        if 'image_file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['image_file']
+        # If the user does not select a file, the browser submits an empty file without a filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+        # update Item
         updated_item = Item.query.get_or_404(updid)
 
         updated_item.itmname = upitmname
@@ -518,12 +551,6 @@ def upditm(updid):
         db.session.commit()
     return redirect(url_for("rstrspkt", restaurant_id= item.restoid))
 
-# Hochladen von Bildern (an diesem teil muss noch gearbeitet werden)
-@app.route("/upload/", methods = ['GET', 'POST'])
-def upload_file():
-    if request.method == 'POST':
-        f = request.files['']
-        f.save('/static/images/')
 ###############################################
 
 @app.route("/check_new_orders")

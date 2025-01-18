@@ -58,7 +58,7 @@
             <input id="upitemname" name="upitemname" type="text" placeholder="{{x.itmname}}"}>Name</input><br><br>
             <input id="updescription" name="updescription" type="text">Description</input><br><br>
             <input id="upprice" name="upprice" type="number">Price</input><br><br>
-            <input type="file" name="file" accept="image/*" action="{{ url_for('upload_file') }}" >Image</input><br><br>
+            <input type="file" name="image_file" accept="image/*" action="{{ url_for('upload_file') }}" >Image</input><br><br>
             <input id="upcategory" name="upcategory" type="text">Category</input><br><br>
             <button type="submit" onclick=displayNewCard()>Submit</button>
             <button type="button" onclick=closeUpdateItemD({{x.id}})>Cancel</button>
