@@ -135,7 +135,11 @@
             <p>{{content.strasse}}</p>
         </div>
         <div class="item">
-            <label for="plz"><b>PLZs</b></label>
+            <label for="plz"><b>PLZ</b></label>
+            <p>{{content.plz}}</p>
+        </div>
+        <div class="item">
+            <label for="lieferplz"><b>LieferPLZs</b></label>
             <button class="btn register" onclick="openForm('showPLZ')">showPLZ</button>
         </div>
         <div class="item">
@@ -199,6 +203,10 @@
             <div class="item">
                 <label for="strasse"><b>Strasse</b></label>
                 <input type="text" placeholder="Strasse" name="strasse" required>
+            </div>
+            <div class="item">
+                <label for="plz"><b>PLZ</b></label>
+                <input type="number" placeholder="PLZ" name="plz" required>
             </div>
             <div class="item">
                 <label for="beschreibung"><b>beschreibung</b></label>
@@ -336,7 +344,7 @@
             {% if userType == "Resto" %}
             <h1>PLZ</h1>
             <div>
-                {% for plz in json.loads(content.plz) %}
+                {% for plz in json.loads(content.lieferplz) %}
                 <p>{{plz}}</p>
                 {% endfor %}
             </div>

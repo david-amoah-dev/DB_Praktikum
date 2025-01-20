@@ -35,7 +35,8 @@ class Resto(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(20), unique = True, nullable = False)
     strasse = db.Column(db.String(20), unique = True, nullable = False)
-    plz = db.Column(db.String(), unique = False, nullable = False)
+    plz = db.Column(db.Integer(), unique = False, nullable = False)
+    lieferplz = db.Column(db.String(), unique = False, nullable = False)
     beschreibung = db.Column(db.String(555), nullable = False)
     password = db.Column(db.String(20), nullable = False)
     openTime = db.Column(db.String(), nullable = False)
@@ -120,8 +121,8 @@ def registerResto():
     if request.method == "POST":
         name = request.form.get("name")
         strasse = request.form.get("strasse")
-        #plz = request.form.get("plz")
-        plz = ['1', '234']
+        plz = request.form.get("plz")
+        lieferplz = ['1', '234']
         beschreibung = request.form.get("beschreibung")
         password = request.form.get("password")
         #openTime = request.form.get("openTime")
@@ -130,7 +131,8 @@ def registerResto():
         new_resto = Resto(
             name=name,
             strasse=strasse,
-            plz=json.dumps(plz),
+            plz=int(plz),
+            lieferplz=json.dumps(lieferplz),
             beschreibung=beschreibung,
             password=password,
             openTime=json.dumps(openTime))
@@ -265,6 +267,7 @@ def profile_update():
 
             name = request.form.get("name")
             strasse = request.form.get("strasse")
+            plz = request.form.get("plz")
             beschreibung = request.form.get("beschreibung")
             password = request.form.get("password")
 
@@ -272,6 +275,7 @@ def profile_update():
             
             user.name = name
             user.strasse = strasse
+            user.plz = plz
             user.beschreibung = beschreibung
             user.password = password
 
@@ -285,7 +289,7 @@ def update_PLZ():
     data = request.get_json()
     PLZs = data["inputs"]
     resto = Resto.query.get_or_404(session["user"]["id"])
-    resto.plz = json.dumps(PLZs)
+    resto.lieferplz = json.dumps(PLZs)
     db.session.commit()
     
     return redirect(url_for("profile"))
