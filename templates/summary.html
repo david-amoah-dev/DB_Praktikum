@@ -79,8 +79,9 @@
             <div class="order-list">
                 {% for item in content %}
                 <div class="order-item">
+                    <button class="delButton" type="button" onclick=deleteItem({{loop.index}})>Del</button>
                     <span class="item-name">{{item.name}}</span>
-                    <span class="item-price">{{item.price}}</span>
+                    <span class="item-price">{{"%.2f"|format(item.price)}} €</span>
                     <span class="item-amount">{{item.amount}}</span>
                 </div>
                 {% endfor %}
@@ -95,5 +96,19 @@
             <button type="submit" class="confirm-btn">Bestellung abschließen</button>
         </div>
     </form>
+
+    <script>
+        function deleteItem(itemID) {
+            fetch('/deleteItemFromCart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'int',
+            },
+            body: itemID,
+            })
+            alert("Item Removed")
+            window.location.reload();
+        }
+    </script>
 </body>
 </html>

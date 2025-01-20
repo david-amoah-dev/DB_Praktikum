@@ -309,6 +309,8 @@ def accept_order(order_id):
     finalRestoWallet = f"{restoWallet:.2f}"
     resto.wallet = finalRestoWallet
 
+    # hier update lieferspatz wallet
+
     # update order status
     order.lieferstatus = "in Zubereitung" 
     order.zahlungsstatus = "abgeschlossen"
@@ -368,33 +370,33 @@ def add_order():
     
 @app.route("/summary/")
 def summary():
-    # to do change to get items from session
-    #item1 = {"name" : "Name1", "description" : "Text1", "price" : 1.20, "amount" : 5, "restoID" : 1}
-    #item2 = {"name" : "Name2", "description" : "Text2", "price" : 2.20, "amount" : 4, "restoID" : 1}
-    #item3 = {"name" : "Name3", "description" : "Text3", "price" : 3.20, "amount" : 3, "restoID" : 1}
-    #items = [item1, item2, item3]
-    #session["items"] = items
-
     if not "user" in session:
         return redirect(url_for("login"))
     if not "items" in session:
         return redirect(url_for("login"))
     items_dict = session["items"]
 
-    
-
-    
-    
-    #session["items"] = items_dict 
-
     # calculate price 
     total = 0.0
     for elem in items_dict:
         total += float(elem["price"]) * int(elem["amount"])
-        
+    # display with 2 decimal points
     final = f"{total:.2f}"
 
     return render_template("summary.html", content = items_dict, total = final)
+
+
+@app.route("/deleteItemFromCart", methods=["POST"])
+def deleteItemFromCart():
+    itemID = int(request.get_data()) - 1 # subtract one to start at index 0
+    print(itemID)
+    items = session["items"]
+    print(session["items"])
+    del items[itemID]
+    session["items"] = items
+    print(session["items"])
+
+    return redirect(url_for("summary"))
 
 @app.route("/new_order/", methods=["POST"])
 def new_order():
@@ -405,6 +407,8 @@ def new_order():
     # get session elements
     userID = session["user"]["id"]
     items = session["items"]
+    if not items:
+        return redirect(url_for("CatchResto"))
     restoID = items[0]["restoID"]
 
     user = Kunde.query.get_or_404(userID)
@@ -420,17 +424,17 @@ def new_order():
 
     if user.wallet - total<0:
         new_order = Orders(
-        lieferstatus = "storniert",
-        items = serializedItems,
-        preis = float(finalprice),
-        zahlungsstatus = "abgebrochen",
-        name = f"{user.vorname} {user.nachname}",
-        adresse = user.adresse,
-        kunde_id = userID,
-        resto_id = restoID,
-        anmerkungen = "Geld unzureichend",
-        postleitzahl = user.postleitzahl
-    )
+            lieferstatus = "storniert",
+            items = serializedItems,
+            preis = float(finalprice),
+            zahlungsstatus = "abgebrochen",
+            name = f"{user.vorname} {user.nachname}",
+            adresse = user.adresse,
+            kunde_id = userID,
+            resto_id = restoID,
+            anmerkungen = "Geld unzureichend",
+            postleitzahl = user.postleitzahl
+        )
     else:
         new_order = Orders(
             lieferstatus = "in Bearbeitung",
@@ -446,6 +450,9 @@ def new_order():
         )
     db.session.add(new_order)
     db.session.commit()
+
+    # empty selected Items
+    session["items"] = []
     
     return redirect(url_for("bestellansichtKunde"))
 
