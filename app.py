@@ -35,7 +35,7 @@ class Resto(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(20), unique = True, nullable = False)
     strasse = db.Column(db.String(20), unique = True, nullable = False)
-    plz = db.Column(db.Integer(), unique = False, nullable = False)
+    plz = db.Column(db.String(), unique = False, nullable = False)
     beschreibung = db.Column(db.String(555), nullable = False)
     password = db.Column(db.String(20), nullable = False)
     openTime = db.Column(db.String(), nullable = False)
@@ -235,7 +235,7 @@ def profile():
         user = Kunde.query.get_or_404(user1["id"])
     else:
         user = Resto.query.get_or_404(user1["id"])
-    return render_template("profile.html", content=user, userType = user1["type"])
+    return render_template("profile.html", content=user, userType = user1["type"], json = json)
     
 @app.route("/profile/update/", methods=["POST", "GET"])
 def profile_update():
@@ -263,22 +263,58 @@ def profile_update():
 
             name = request.form.get("name")
             strasse = request.form.get("strasse")
-            plz = request.form.get("plz")
             beschreibung = request.form.get("beschreibung")
             password = request.form.get("password")
-            openTime = request.form.get("openTime")
 
             user = Resto.query.get_or_404(user["id"])
             
             user.name = name
             user.strasse = strasse
-            user.plz = plz
             user.beschreibung = beschreibung
             user.password = password
-            user.openTime = openTime
 
             db.session.commit()
     
+    return redirect(url_for("profile"))
+
+
+@app.route("/update_PLZ", methods=["POST"])
+def update_PLZ():
+    data = request.get_json()
+    PLZs = data["inputs"]
+    resto = Resto.query.get_or_404(session["user"]["id"])
+    resto.plz = json.dumps(PLZs)
+    db.session.commit()
+    
+    return redirect(url_for("profile"))
+
+@app.route("/update_openTime", methods=["POST"])
+def update_openTime():
+
+    openTime = {
+    "MondayStart" : request.form.get("monday-start"),
+    "MondayEnd" : request.form.get("monday-end"),
+    "TuesdayStart" : request.form.get("tuesday-start"),
+    "TuesdayEnd" : request.form.get("tuesday-end"),
+    "WednesdayStart" : request.form.get("wednesday-start"),
+    "WednesdayEnd" : request.form.get("wednesday-end"),
+    "ThursdayStart" : request.form.get("thursday-start"),
+    "ThursdayEnd" : request.form.get("thursday-end"),
+    "FridayStart" : request.form.get("friday-start"),
+    "FridayEnd" : request.form.get("friday-end"),
+    "SaturdayStart" : request.form.get("saturday-start"),
+    "SaturdayEnd" : request.form.get("saturday-end"),
+    "SundayStart" : request.form.get("sunday-start"),
+    "SundayEnd" : request.form.get("sunday-end")
+    }
+    print(openTime)
+
+    resto = Resto.query.get_or_404(session["user"]["id"])
+    resto.openTime = json.dumps(openTime)
+    db.session.commit()
+    
+
+
     return redirect(url_for("profile"))
 
 
