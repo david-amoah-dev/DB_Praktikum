@@ -83,6 +83,9 @@ class Item(db.Model):
     category = db.Column(db.String(), nullable=True)
     restoid = db.Column(db.Integer, nullable=False)
 ###############
+class Lieferspatz(db.Model):
+    Lieferspatz = db.Column(db.Integer(),primary_key=True)
+    wallet = db.Column(db.Float(),nullable=False)
 
 with app.app_context():
   db.create_all()
@@ -168,6 +171,9 @@ def login():
             session["user"] = user
 
             return redirect(url_for('rstrspkt', restaurant_id = resto.id))
+        else:
+            flash("Invalid username or password. Please try again.", "error")
+            return render_template('loginsaghar.html')
     else :
         return render_template('loginsaghar.html')
         
@@ -338,6 +344,14 @@ def accept_order(order_id):
     order = Orders.query.get_or_404(order_id)
     user = Kunde.query.get_or_404(order.kunde_id)
     resto = Resto.query.get_or_404(order.resto_id)
+    lieferspatz = Lieferspatz.query.first()
+
+    if not lieferspatz:
+        lieferspatz = Lieferspatz(
+            Lieferspatz = 1,
+            wallet = 0.0
+        )
+        db.session.add(lieferspatz)
 
     #update User Wallet
     userWallet = float(user.wallet)
@@ -352,6 +366,9 @@ def accept_order(order_id):
     resto.wallet = finalRestoWallet
 
     # hier update lieferspatz wallet
+    lieferspatz_wallet = float(lieferspatz.wallet)
+    lieferspatz_wallet += (float(order.preis) * 0.15)
+    lieferspatz.wallet = f"{lieferspatz_wallet:.2f}"
 
     # update order status
     order.lieferstatus = "in Zubereitung" 
@@ -364,50 +381,6 @@ def finished_order(order_id):
     order.lieferstatus = "abgeschlossen" 
     db.session.commit()
     return redirect(request.referrer)
-
-# delete this
-@app.route('/add_order', methods=["POST"])
-def add_order():
-    name = "unknown"
-    adresse = "unknown"
-    if request.method == "POST": 
-        if 'user' in session:  # Überprüfen, ob der Benutzer eingeloggt ist
-            user = session['user']
-            kunde = Kunde.query.get_or_404( user['id'])  # Hole den Kunden mit der ID aus der Session
-            name = f"{kunde.vorname} {kunde.nachname}"  # Setze den vollständigen Namen (Vorname + Nachname)
-            adresse = kunde.adresse
-            
-                
-        lieferstatus = request.form.get("lieferstatus")
-        items = request.form.get("items")
-
-        # preis ist nicht static gespeichert!!
-        preis = float(request.form.get("preis"))
-
-        menge = int(request.form.get("menge"))
-        zahlungsstatus = request.form.get("zahlungsstatus")
-        liefergebuehren = float(request.form.get("liefergebuehren"))
-        anmerkungen = request.form.get("anmerkungen")
-
-        # muss noch angepasst werden
-        gesamt = preis * menge + liefergebuehren
-
-        new_order = Orders(
-            lieferstatus=lieferstatus,
-            items=items,
-            preis=preis,
-            menge=menge,
-            zahlungsstatus=zahlungsstatus,
-            liefergebuehren=liefergebuehren,
-            gesamt=gesamt,
-            anmerkungen = anmerkungen,
-            name=name,
-            adresse= adresse
-        )
-        db.session.add(new_order)
-        db.session.commit()
-
-        return redirect(url_for('bestellansichtKunde'))
 
     
 @app.route("/summary/")
