@@ -120,18 +120,20 @@ def registerResto():
     if request.method == "POST":
         name = request.form.get("name")
         strasse = request.form.get("strasse")
-        plz = request.form.get("plz")
+        #plz = request.form.get("plz")
+        plz = ['1', '234']
         beschreibung = request.form.get("beschreibung")
         password = request.form.get("password")
-        openTime = request.form.get("openTime")
+        #openTime = request.form.get("openTime")
+        openTime = {'MondayStart': '15:54', 'MondayEnd': '18:57', 'TuesdayStart': '17:58', 'TuesdayEnd': '17:58', 'WednesdayStart': '17:59', 'WednesdayEnd': '16:57', 'ThursdayStart': '18:58', 'ThursdayEnd': '17:58', 'FridayStarayEnd': '20:57', 'SaturdayStart': '17:59', 'SaturdayEnd': '15:56', 'SundayStart': '19:57', 'SundayEnd': '18:57'}
 
         new_resto = Resto(
             name=name,
             strasse=strasse,
-            plz=int(plz),
+            plz=json.dumps(plz),
             beschreibung=beschreibung,
             password=password,
-            openTime=openTime)
+            openTime=json.dumps(openTime))
         print(f"Received: {name}, {strasse}, {plz}, {beschreibung}, {password}, {openTime}")
         db.session.add(new_resto)
         db.session.commit()
