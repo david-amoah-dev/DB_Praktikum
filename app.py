@@ -125,11 +125,27 @@ def registerResto():
         name = request.form.get("name")
         strasse = request.form.get("strasse")
         plz = request.form.get("plz")
-        lieferplz = ['1', '234']
+        lieferplz = request.form.get("lieferplz")  # Get the string from the form
         beschreibung = request.form.get("beschreibung")
         password = request.form.get("password")
-        #openTime = request.form.get("openTime")
-        openTime = {'MondayStart': '15:54', 'MondayEnd': '18:57', 'TuesdayStart': '17:58', 'TuesdayEnd': '17:58', 'WednesdayStart': '17:59', 'WednesdayEnd': '16:57', 'ThursdayStart': '18:58', 'ThursdayEnd': '17:58', 'FridayStarayEnd': '20:57', 'SaturdayStart': '17:59', 'SaturdayEnd': '15:56', 'SundayStart': '19:57', 'SundayEnd': '18:57'}
+        openTime = {
+            "MondayStart": request.form.get("monday-start"),
+            "MondayEnd": request.form.get("monday-end"),
+            "TuesdayStart": request.form.get("tuesday-start"),
+            "TuesdayEnd": request.form.get("tuesday-end"),
+            "WednesdayStart": request.form.get("wednesday-start"),
+            "WednesdayEnd": request.form.get("wednesday-end"),
+            "ThursdayStart": request.form.get("thursday-start"),
+            "ThursdayEnd": request.form.get("thursday-end"),
+            "FridayStart": request.form.get("friday-start"),
+            "FridayEnd": request.form.get("friday-end"),
+            "SaturdayStart": request.form.get("saturday-start"),
+            "SaturdayEnd": request.form.get("saturday-end"),
+            "SundayStart": request.form.get("sunday-start"),
+            "SundayEnd": request.form.get("sunday-end"),
+        }
+
+        #openTime = {'MondayStart': '15:54', 'MondayEnd': '18:57', 'TuesdayStart': '17:58', 'TuesdayEnd': '17:58', 'WednesdayStart': '17:59', 'WednesdayEnd': '16:57', 'ThursdayStart': '18:58', 'ThursdayEnd': '17:58', 'FridayStarayEnd': '20:57', 'SaturdayStart': '17:59', 'SaturdayEnd': '15:56', 'SundayStart': '19:57', 'SundayEnd': '18:57'}
 
         new_resto = Resto(
             name=name,
@@ -143,6 +159,8 @@ def registerResto():
         db.session.add(new_resto)
         db.session.commit()
     return redirect(url_for('login'))
+
+
 
 
 
@@ -215,15 +233,39 @@ def bestellansichtResto():
 
     return render_template('resto_Bestellansicht.html', orders=orders, json=json)
 
-    
-@app.route('/restaurants', methods=["GET"])
-def CatchResto():
-    #catch the PLZ from session(for now the static version)
-    kunde_postleitzahl = session['user'].get('plz')
 
-    #catch the restaurant with the same PLZ
-    restaurants= Resto.query.filter_by(plz=kunde_postleitzahl).all()
-    return render_template('restaurants.html', restaurants = restaurants)
+
+@app.route("/CatchResto", methods=['GET', 'POST'])
+def CatchResto():
+    if not "user" in session:
+        return redirect(url_for("login"))
+
+    customerPLZ = str(session['user'].get('plz'))
+    current_day = datetime.now().strftime('%A') 
+    current_time = datetime.now().strftime('%H:%M') 
+
+    available_restaurants = Resto.query.all()  
+    filtered_restaurants = []
+
+    for resto in available_restaurants:
+        # Convert the JSON string to a Python list of postal codes
+        plz_list = json.loads(resto.lieferplz)  # Extract `lieferplz` (JSON) and convert it to a list
+
+        # Check if the customer's PLZ is in the list of available PLZs
+        if customerPLZ in plz_list:
+            openTime = json.loads(resto.openTime)  # Parse the restaurant's opening hours JSON
+            
+            # Check if the restaurant is open now
+            if openTime.get(current_day + "Start") and openTime.get(current_day + "End"):
+                start_time = datetime.strptime(openTime[current_day + "Start"], '%H:%M')
+                end_time = datetime.strptime(openTime[current_day + "End"], '%H:%M')
+                now_time = datetime.strptime(current_time, '%H:%M')
+
+                if start_time <= now_time <= end_time:
+                    filtered_restaurants.append(resto)
+
+    return render_template('restaurants.html', restaurants=filtered_restaurants)
+
 
 
 @app.route('/Menu', methods=["GET"])
