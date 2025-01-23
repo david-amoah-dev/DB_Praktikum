@@ -78,7 +78,7 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     itmname = db.Column(db.String(20), unique = False, nullable = True)
     description = db.Column(db.String(20), unique = False, nullable = True)
-    price = db.Column(db.Integer(), nullable = True)
+    price = db.Column(db.Float(), nullable = False)
     image = db.Column(db.String(),nullable=True)
     category = db.Column(db.String(), nullable=True)
     restoid = db.Column(db.Integer, nullable=False)
@@ -188,7 +188,7 @@ def login():
             user = {"id" : resto.id, "type" : "Resto", "plz" : resto.plz, "username" : resto.name}
             session["user"] = user
 
-            return redirect(url_for('rstrspkt', restaurant_id = resto.id))
+            return redirect(url_for('resto_speisekarte', restaurant_id = resto.id))
         else:
             flash("Invalid username or password. Please try again.", "error")
             return render_template('loginsaghar.html')
@@ -529,15 +529,15 @@ def test( restaurant_id):
 
 #############################################
 #ansicht der details zu dem ausgewählten restaurant (also die Speisekarte)
-@app.route("/cstmrstdtl/<int:restaurant_id>", methods=['GET', 'POST'])
-def cstmrstdtl(restaurant_id):
+@app.route("/resto_details/<int:restaurant_id>", methods=['GET', 'POST'])
+def resto_details(restaurant_id):
     items = db.session.execute(db.select(Item).filter_by(restoid = restaurant_id)).scalars()
     restaurant = Resto.query.get_or_404(restaurant_id)
     return render_template('CustomerView-RestaurantDetails.html', items=items, restaurant=restaurant)
 
 #ansicht des eingeloggten restaurants zum bearbeiten der eigenen Restaurant Speisekarte
-@app.route("/rstrspkt/<int:restaurant_id>", methods=['GET', 'POST'])
-def rstrspkt(restaurant_id):
+@app.route("/resto_speisekarte/<int:restaurant_id>", methods=['GET', 'POST'])
+def resto_speisekarte(restaurant_id):
     items = db.session.execute(db.select(Item).filter_by(restoid = restaurant_id)).scalars()
     restaurant = Resto.query.get_or_404(restaurant_id)
     return render_template('RestaurantView-Speisekarte.html', items=items, restaurant=restaurant)
@@ -554,13 +554,10 @@ def itmadd(restaurant_id):
 
         #upload file
         if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            file_path = "static/images/not-available.png"
         file = request.files['file']
-        # If the user does not select a file, the browser submits an empty file without a filename
         if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+            file_path = "static/images/not-available.png"
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -571,7 +568,7 @@ def itmadd(restaurant_id):
         print(f"Received: {itmname}, {description}, {price}, {category}")
         db.session.add(new_item)
         db.session.commit()
-    return redirect(url_for("rstrspkt", restaurant_id = restaurant_id))
+    return redirect(url_for("resto_speisekarte", restaurant_id = restaurant_id))
 
 # löschen eines items aus der Speisekarte
 @app.route("/delitm/<int:mid>", methods = ['GET','POST'])
@@ -579,7 +576,7 @@ def delitm(mid):
     item = db.session.execute(db.select(Item).filter_by(id = mid)).scalar_one()
     db.session.delete(item)
     db.session.commit()
-    return redirect(url_for("rstrspkt", restaurant_id = item.restoid))
+    return redirect(url_for("resto_speisekarte", restaurant_id = item.restoid))
 
 # ändern eines items aus der Speisekarte
 @app.route("/upditm/<int:updid>", methods = ['GET','POST'])
@@ -593,13 +590,11 @@ def upditm(updid):
 
         #upload file
         if 'image_file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
+            file_path = "static/images/not-available.png"
         file = request.files['image_file']
-        # If the user does not select a file, the browser submits an empty file without a filename
         if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
+            file_path = "static/images/not-available.png"
+        file = request.files['image_file']
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -617,7 +612,7 @@ def upditm(updid):
         print(f"Received: {upitmname}, {updescription}, {upprice}, {upcategory}")
         #db.session.update(item)
         db.session.commit()
-    return redirect(url_for("rstrspkt", restaurant_id= item.restoid))
+    return redirect(url_for("resto_speisekarte", restaurant_id= item.restoid))
 
 ###############################################
 

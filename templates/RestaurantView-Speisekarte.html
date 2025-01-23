@@ -10,49 +10,56 @@
 <body>
 
 <!--  ___________________________________________________________________Headerbar_____________________________________________________________________  -->
-<header>
+<div  class=" header-layout">
     <div>
-        <p>
-        <a href="/">
-        <img style="width:50px;height:50px;" src="{{ url_for('static', filename='images/Lieferspatz.svg') }}" alt="Logo">
+        <a href="{{ url_for('CatchResto')}}">
+            <img class="logo" src="{{ url_for('static', filename='images/LP.PNG') }} ">
         </a>
-        <a href="/">
-        <img src="{{ url_for('static', filename='images/LieferspatzSchrift.svg') }}" style="width:300px;height:50px;">
-        </a></p>
-        <hr>
     </div>
-</header>
+    <div style=" padding: 10px;">
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button class="orbtn" type="submit">Logout</button>
+        </form>
+        <a href="{{ url_for('profile')}}">
+            <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
+        </a>
+    </div>
+
+</div>
 
 <!-- _____________________________________________________________________Speisekarte____________________________________________________________________ -->
 
 <h1 class="head">Speisekarte</h1>
 <h3 id="C1" class="head">Menü</h3>
 
-<div class="horizontal-center">
-    <button id="tstbtn" class="addbtn" onclick=showCreateItemD() style="float:right;"><b>+</b></button>
+<div class="grid-container">
+
+<div class="sidebar">
+    <h4>{{restaurant.name}}</h4>
+    <p>{{restaurant.beschreibung}}</p>
+    <p>Öffnungszeiten: {{restaurant.opentime}}</p>
+    <p>Adresse: {{restaurant.strasse}}</p>
+    <p>PLZ: {{restaurant.plz}}</p>
 </div>
-
-<p>{{restaurant.name}}</p>
-<p>{{restaurant.strasse}}</p>
-<p>{{restaurant.plz}}</p>
-<p>{{restaurant.beschreibung}}</p>
-<p>{{restaurant.opentime}}</p>
-
 {% for x in items %}
-<div class="columnright">
-<div class="card">
+<div>
     <img src="/{{x.image}}" style="width:100%">
-    <div class="container">
+    <div>
         <h4>{{x.itmname}}</h4>
-        <p>{{x.description}}</p>
-        <p><b>{{x.price}}</b></p>
-        <button class="editbtn" type="button" onclick=showUpdateItemD({{x.id}})>edit</button>
-        <a href="{{ url_for('delitm', mid=x.id, restaurant_id=x.restoid) }}">delete</a>
+        <p style="margin: 0;">{{x.description}}</p>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <p><b style="font-size: 24px;">{{x.price}}</b></p><p><b style="font-size: 24px;">€</b></p>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <button  type="button" onclick=showUpdateItemD({{x.id}}) style="border-radius:50px; border:none; background-color: #E98758; height: 30px; width:30px; margin-top: -5px; margin-left: 5px; margin-right: 5px;">
+            <img style="width: 15px; height: 15px; display: justify;" src ="{{ url_for('static', filename='images/edit_pen.png') }} ">
+            </button>
+            <a href="{{ url_for('delitm', mid=x.id, restaurant_id=x.restoid) }}" style="margin-left: 5px; margin-right: 5px;">
+            <img style="width: 20px; height: 20px; border-radius: 50px; padding: 5px; background-color: #E98758;" src ="{{ url_for('static', filename='images/trash_can.png') }} ">
+            </a>
+        </div>
     </div>
 </div>
-
-</div>
-
 
 <!-- __________________________________Popup update Item____________________________________________________ -->
 <dialog id="{{x.id}}">
@@ -69,21 +76,33 @@
 </dialog>
 
 {% endfor %}
-
+</div>
 <!-- __________________________________Popup add new Item___________________________________________________ -->
 <dialog id="createItem">
         <h3> New Item </h3>
         <form action="{{ url_for('itmadd', restaurant_id = restaurant.id) }}" method="post" enctype="multipart/form-data">
-            <input id="itemname" name="itemname" type="text">Name</input><br><br>
-            <input id="description" name="description" type="text">Description</input><br><br>
-            <input id="price" name="price" type="number">Price</input><br><br>
-            <input type="file" name="file" accept="image/*">Image</input><br><br>
-            <input id="category" name="category" type="text">Category</input><br><br>
-            <button type="submit" onclick=displayNewCard()>Submit</button>
-            <button type="button" onclick=closeCreateItemD()>Cancel</button>
+            <label>Name*</label>
+            <input id="itemname" name="itemname" type="text"></input><br><br>
+            <label>Beschreibung*</label>
+            <input id="description" name="description" type="text"></input><br><br>
+            <label>Preis*</label>
+            <input id="price" name="price" type="number"></input><br><br>
+            <label>Bild (optional)</label>
+            <input type="file" name="file" accept="image/*"></input><br><br>
+            <label>Kategorie</label>
+            <input id="category" name="category" type="text"></input><br><br>
+            <button type="submit" class="grnbtn" onclick=displayNewCard()><b>Submit</b></button>
+            <button type="button" class="orbtn" onclick=closeCreateItemD()><b>Cancel</b></button>
         </form>
 </dialog>
 
+
+<!-- footer -->
+<footer>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <button id="tstbtn" class="orbtn" onclick=showCreateItemD() style="float:right;"><b>Produkt hinzufügen</b></button>
+    </div>
+</footer>
 <!-- ___________________________________________________________________Temporal JavaScript______________________________________________________________ -->
 <script>
 const dialog = document.getElementById("createItem");
@@ -105,11 +124,5 @@ function closeUpdateItemD(x) {
 }
 
 </script>
-
-<!-- footer -->
-<footer>
-
-</footer>
-
 </body>
 </html>

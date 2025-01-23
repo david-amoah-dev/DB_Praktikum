@@ -1,139 +1,204 @@
 /*This is going to be the main css file*/
 
 /*
- css objects bzw elements:
+ * css objects bzw elements:
+ *
+ *    ------------------------------------generic Header-bar #allpages------------------------------------------
+ *
+ *
+ *
+ *    ----------------------------------generic-button-template #allpages---------------------------------------
+ */
 
-    ------------------------------------generic Header-bar #allpages------------------------------------------
-
-
-    ------------------------------------fixed sidebar #RestaurantView-Speisekarte-----------------------------
-
-    /* The sidebar menu */
-    .sidenav {
-        position: fixed;
-        top: 200px;
-        left: 10px;
-        background: #eee;
-        overflow-x: hidden;
-        padding: 10px;
-        border-radius: 10px;
-    }
-
-    .sidenav a {
-        text-decoration: none;
-        font-size: 25px;
-        color: #2196F3;
-        display: block;
-    }
-
-    .sidenav a:hover {
-        color: #064579;
-    }
-
-    .head {
-        text-align: center;
-    }
-
-
-
-
-    /*
-    ----------------------------------generic-button-template #allpages---------------------------------------
-    .orbtn {
+.orbtn {
     background-color:#E98758 ;
     color:#025252 ;
-    padding: 15px;
+    padding: 10px;
     border: none;
     cursor: pointer;
-    width: 20%;
-    margin-top: 20px;
-    opacity: 0.9;
+    width: auto;
     align-items: center;
     display: justify;
     border-radius: 40px;
-    margin-bottom: -10px;
     font-family: "Istok Web";
     font-size: 100%;
-    }
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
 
-    .grnbtn {
+.grnbtn {
     background-color:#025252 ;
     color:#E98758 ;
-    padding: 15px;
+    padding: 10px;
     border: none;
     cursor: pointer;
-    width: 20%;
-    margin-top: 20px;
-    opacity: 0.9;
+    width: auto;
     align-items: center;
     display: justify;
     border-radius: 40px;
-    margin-bottom: -10px;
     font-family: "Istok Web";
     font-size: 100%;
-    }
+    margin-left: 5px;
+    margin-right: 5px;
+}
 
-    ---------------------------special-buttons (bsp: add, edit, delete)--------------------------------------
 
-    */
-    .horizontal-center {
-    margin: 20px;
-    position: relative;
-    }
-
-    .addbtn {
-    background-color: #bbbb;
-    border: none;
-    color: white;
-    padding: 5px, 5px;
+p {
+    font-family: "Istok Web";
     text-align: center;
-    text-decoration: none;
-    display: block;
+    font-size: 14px;
+}
+
+
+h1 {
+    color: #000;
+    font-family: "Istok Web";
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    margin-top: 10px;
+    text-align: center;
+}
+
+h3 {
+    color: #000;
+    font-family: "Istok Web";
     font-size: 24px;
-    margin: 20px;
+    font-style: normal;
+    line-height: normal;
+    margin-top: -10px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+h4 {
+    color: #000;
+    font-family: "Istok Web";
+    font-size: 16px;
+    font-style: normal;
+    line-height: normal;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+label {
+    font-size: 14px;
+    color: #555;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+/*
+ *    ---------------------------special-buttons (bsp: add, edit, delete)--------------------------------------
+ *
+ *
+ *    .horizontal-center {
+ *    margin: 20px;
+ *    position: relative;20%
+ *    }
+ */
+.add-subtract-btn {
+    background-color: #aeaeae;
+    border: none;
+    text-align: center;
     border-radius: 50%;
-    }
+    width: 25px;
+    height: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
 
-    /*
+dialog {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    border: none;
+    padding: 25px 75px 50.209px 75px;
+}
 
-    --------------------------------generic Card Styles #allpages--------------------------------------------
+.grid-container {
+    display: grid;
+    gap: 10px;
+    grid-template-areas: 'sidenav . . .' ' sidenav . . .';
+}
 
-    */
-    .card {
+.sidebar {
+    grid-area: sidenav;
+}
+/*
+ *
+ *    --------------------------------generic Card Styles #allpages--------------------------------------------
+ *
+ */
+.grid-container > div {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
     transition: 0.3s;
-    max-width: 400px;
+    max-width: 300px;
     border-radius: 5px;
     margin: 20px;
-    }
+}
 
-    .card:hover {
+.card:hover {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-    }
+}
 
-    img {
+img {
     border-radius: 5px 5px 0 0;
-    }
+    max-height: 200px;
+    width: auto;
+}
+/*
+ *    .container {
+ *    padding: 2px 16px;
+ *    }
+ *
+ *    .column {
+ *        width: 33.33%;
+ *        float: left;
+ *    }
+ *
+ *    .columnright {
+ *        width: 33.33%;
+ *        float: right;
+ *    }
+ *
+ *    /*
+ *
+ *    --------------------------------------generic popups #allpages------------------------------------------
+ *
+ * ----------Copy from Headerbar-----------
+ */
 
-    .container {
-    padding: 2px 16px;
-    }
 
-    .column {
-        width: 33.33%;
-        float: left;
-    }
+ .logo{
+     height: 80px;
+     border-radius: 10px;
+ }
+ .header-layout{
+     display: grid;
+     grid-template-columns: 1fr 1fr;
+     background-color: rgb(255, 255, 255);
+     border: 1px solid #ccc;
 
-    .columnright {
-        width: 33.33%;
-        float: right;
-    }
+ }
+ .header-layout > div:first-child {
+     display: flex;
+     justify-content: left; /* Centers horizontally */
+     align-items: center; /* Centers vertically */
 
-    /*
+ }
+ .header-layout > div:nth-child(2) {
+     display: flex;
+     justify-content: right;
+     align-items: center;
 
-    --------------------------------------generic popups #allpages------------------------------------------
 
-
-*/
-
-
+ }

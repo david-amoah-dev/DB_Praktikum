@@ -10,53 +10,74 @@
 <body>
 
 <!-- Headerbar -->
-<header>
+<div  class=" header-layout">
     <div>
-        <p>
-        <a href="/">
-        <img style="width:50px;height:50px;" src="{{ url_for('static', filename='images/Lieferspatz.svg') }}" alt="Logo">
+        <a href="{{ url_for('CatchResto')}}">
+            <img class="logo" src="{{ url_for('static', filename='images/LP.PNG') }} ">
         </a>
-        <a href="/">
-        <img src="{{ url_for('static', filename='images/LieferspatzSchrift.svg') }}" style="width:300px;height:50px;">
-        </a></p>
-        <hr>
     </div>
-</header>
+    <div style=" padding: 10px;">
+        <form action="{{ url_for('logout') }}" method="POST">
+            <button class="orbtn" type="submit">Logout</button>
+        </form>
+        <a href="{{ url_for('profile')}}">
+            <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
+        </a>
+
+        <img style="height: 40px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
+    </div>
+
+</div>
+
 
 <!-- Speisekarte -->
-
+<div class="sidebar">
 <h1 class="head">Speisekarte</h1>
 <h3 id="C1" class="head">Menü</h3>
 
-<p>{{restaurant.name}}</p>
-<p>{{restaurant.strasse}}</p>
-<p>{{restaurant.plz}}</p>
-<p>{{restaurant.beschreibung}}</p>
-<p>{{restaurant.opentime}}</p>
+<div class="grid-container">
 
+<div class="sidebar">
+    <h4>{{restaurant.name}}</h4>
+    <p>{{restaurant.beschreibung}}</p>
+    <p>Öffnungszeiten: {{restaurant.opentime}}</p>
+    <p>Adresse: {{restaurant.strasse}}</p>
+    <p>PLZ: {{restaurant.plz}}</p>
+</div>
 
 {% for x in items %}
-<div class="card">
+<div>
     <img src="/{{x.image}}" style="width:100%">
-    <div class="container">
+    <div>
         <h4 id="itmhead_{{loop.index}}">{{x.itmname}}</h4>
-        <p id="itmdesc_{{loop.index}}">{{x.description}}</p>
+        <p id="itmdesc_{{loop.index}}" style="margin: 0;">{{x.description}}</p>
         <p id="itmrestoID_{{loop.index}}" style="display: none;">{{x.restoid}}</p>
-        <p><b id="itmprice_{{loop.index}}">{{x.price}}</b></p>
-        <button class="plusbtn" type="button" onclick=increaseAmount({{loop.index}})>+</button>
-        <button class="minusbtn" type="button" onclick=decreaseAmount({{loop.index}})>-</button>
-        <p>Amount:</p><p id="itmamount_{{loop.index}}">0</p>
-        <button class="minusbtn" type="button" onclick=addToCart({{loop.index}})>add to cart</button>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <p><b id="itmprice_{{loop.index}}" style="font-size: 24px;" >{{x.price}} </b></p><p style="display:inline; font-size: 24px;"><b>€</b></p>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <button class="add-subtract-btn" type="button" onclick=increaseAmount({{loop.index}})>+</button>
+            <button class="add-subtract-btn" type="button" onclick=decreaseAmount({{loop.index}})>-</button>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <p>Amount: </p><p id="itmamount_{{loop.index}}">0</p>
+        </div>
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <button class="orbtn" type="button" onclick=addToCart({{loop.index}})>add to cart</button>
+        </div>
     </div>
 </div>
 {% endfor %}
 
-<!-- Place Order -->
-<div>
-    <button class="minusbtn" type="button" onclick=place_Order()>place order</button>
 </div>
 
-<p id="test_cart">test results</p>
+<!-- footer -->
+<footer>
+<!-- Place Order -->
+<div style="display: flex; justify-content: center; align-items: center;">
+    <button class="orbtn" type="submit" onclick=place_Order()>zum Warenkorb</button>
+</div>
+</footer>
 
 <script>
     const current_cart = [];
@@ -67,15 +88,24 @@
     }
 
     function place_Order(){
-        document.getElementById("test_cart").innerHTML = current_cart.toString();
         fetch('/submit_cart', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(current_cart),
-    })
+        }).then(
+    response => {
+        if (response.redirected) {
+            window.location = response.url
+        } else {
+            showLoginError()
+        }
     }
+)
+
+    }
+
 
     function increaseAmount(amount){
         const y = document.getElementById("itmamount_".concat(amount.toString()));
@@ -93,12 +123,5 @@
         }
     }
 </script>
-
-
-<!-- footer -->
-<footer>
-
-</footer>
-
 </body>
 </html>
