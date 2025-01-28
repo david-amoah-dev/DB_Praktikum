@@ -252,9 +252,9 @@
         </div>
         <div class="customer-and-buttons"> 
             <div class="customer-data"> 
-                <h2><b>Kundendaten</b></h2>
-                <p> {{ order.name }}</p>
-                <p> {{ order.adresse }}, {{order.postleitzahl}}</p> 
+                <h2><b>Restaurantdaten</b></h2>
+                <p> {{ order.resto_name }}</p>
+                <p> {{ order.resto_adresse }}, {{ order.resto_postleitzahl }}</p> 
             </div>
             <div class="buttons">
                 <form method="POST" action="{{ url_for('decline_order', order_id=order.id) }}">

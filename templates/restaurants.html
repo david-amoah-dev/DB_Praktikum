@@ -105,8 +105,9 @@
             <a href="{{ url_for('profile')}}">
                 <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
             </a>
-
-            <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
+            <a href="{{ url_for('summary')}}">
+                <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
+            </a>
         </div>
 
     </div>
@@ -117,10 +118,10 @@
     <h2 style="color: #025252; margin: 10px;">GEÖFFNETE RESTAURANTS</h2>
     <div class="box">
         {% for restaurant in restaurants %}
-        <a href="{{ url_for('cstmrstdtl', restaurant_id=restaurant.id) }}">
+        <a href="{{ url_for('resto_details', restaurant_id=restaurant.id) }}">
         <div class="resto" >
             <div>
-                <img src="{{ url_for('static', filename='images/not-available.png') }} ">
+                <img src="/{{restaurant.image}}" alt="{{ url_for('static', filename='images/not-available.png') }} ">
             </div>
             <div>
                 <h2>{{ restaurant.name }}</h2>

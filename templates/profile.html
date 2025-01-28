@@ -92,9 +92,62 @@
             justify-content: space-between;
         }
 
+        .logo{
+            height: 80px;
+            border-radius: 10px;
+        }
+        .header-layout{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: rgb(255, 255, 255);
+            border: 1px solid #ccc;
+            
+        }
+        .header-layout > div:first-child {
+            display: flex;
+            justify-content: left; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+            
+        }
+        .header-layout > div:nth-child(2) {
+            display: flex;
+            justify-content: right;
+            align-items: center; 
+            
+    
+        }
+
     </style>
 </head>
 <body>
+    <div  class=" header-layout">
+        <div>
+            {% if userType == "Kunde" %}
+            <a href="{{ url_for('CatchResto')}}">
+                <img class="logo" src="{{ url_for('static', filename='images/LP.png') }} ">
+            </a>
+            {% else %}
+            <a href="{{ url_for('resto_speisekarte', restaurant_id = userID)}}">
+                <img class="logo" src="{{ url_for('static', filename='images/LP.png') }} ">
+            </a>
+            {% endif %}
+        </div>
+        <div style=" padding: 10px;">
+            <form action="{{ url_for('logout') }}" method="POST">
+                <button type="submit">Logout</button>
+            </form>
+            <a href="{{ url_for('profile')}}">
+                <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
+            </a>
+            <a href="{{ url_for('summary')}}">
+                <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
+            </a>
+        </div>
+
+    </div>
+
+
+
     <div class="Profile" id="Profile">
         <h1>
             Profile
@@ -125,6 +178,7 @@
             <p>{{"%.2f"|format(content.wallet)}} €</p>
         </div>
 
+        <a class="btn register" href="{{url_for('bestellansichtKunde')}}">Bestellansicht</a>
         {% else %}
         <div class="item">
             <label for="name"><b>Name</b></label>
@@ -161,11 +215,12 @@
 
         <button class="btn register" onclick="openForm('PLZupdateForm')"><b>Update your PLZs</b></button>
         <button class="btn register" onclick="openForm('openTimeUpdateForm')"><b>Update your openTime</b></button>
-
+        <a class="btn register" href="{{url_for('bestellansichtResto')}}">Bestellansicht</a>
         {% endif %}
 
             <!-- Button to open the user registration form -->
         <button class="btn register" onclick="openForm('profileUpdateForm')"><b>Update your Stuff</b></button>
+        
         
         
     </div>
@@ -355,6 +410,9 @@
     </div>
     
     <script src= "{{ url_for('static', filename='profile_update.js') }}"></script>
-    
+
+    {% if userType == "Resto" %}
+    <script src="{{ url_for('static', filename='alert.js') }}"></script>
+    {% endif %}
 </body>
 </html>

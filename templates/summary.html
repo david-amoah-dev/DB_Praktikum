@@ -68,9 +68,57 @@
         .confirm-btn:hover {
             background: #e65a00;
         }
+
+        .logo{
+            height: 80px;
+            border-radius: 10px;
+        }
+        .header-layout{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: rgb(255, 255, 255);
+            border: 1px solid #ccc;
+            
+        }
+        .header-layout > div:first-child {
+            display: flex;
+            justify-content: left; /* Centers horizontally */
+            align-items: center; /* Centers vertically */
+            
+        }
+        .header-layout > div:nth-child(2) {
+            display: flex;
+            justify-content: right;
+            align-items: center; 
+            
+    
+        }
     </style>
 </head>
 <body>
+    <div  class=" header-layout">
+        <div>
+            <a href="{{ url_for('CatchResto')}}">
+                <img class="logo" src="{{ url_for('static', filename='images/LP.png') }} ">
+            </a>
+        </div>
+        <div style=" padding: 10px;">
+            <form action="{{ url_for('logout') }}" method="POST">
+                <button type="submit">Logout</button>
+            </form>
+            <a href="{{ url_for('profile')}}">
+                <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
+            </a>
+            <a href="{{ url_for('summary')}}">
+                <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
+            </a>
+        </div>
+
+    </div>
+    
+
+
+    
     <form action="{{ url_for('new_order') }}" method="post">
         <div class="container">
             <div class="header">

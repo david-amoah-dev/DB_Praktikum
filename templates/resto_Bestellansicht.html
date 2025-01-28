@@ -201,8 +201,7 @@
 </head>
 <body>
     <header>
-        <!--CatchResto noch, da Speisekarte fehlt-->
-        <a href="{{ url_for('CatchResto') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
+        <a href="{{ url_for('resto_speisekarte', restaurant_id = restoID) }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo"></a>
         <button type="button" class="btn search"><b>Search</b></button>     
         <div class="right-header">
             <a href="{{ url_for('profile') }}" class="btn profile">Profil</a>

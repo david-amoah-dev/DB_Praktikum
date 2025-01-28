@@ -12,7 +12,7 @@
 <!--  ___________________________________________________________________Headerbar_____________________________________________________________________  -->
 <div  class=" header-layout">
     <div>
-        <a href="{{ url_for('CatchResto')}}">
+        <a>
             <img class="logo" src="{{ url_for('static', filename='images/LP.PNG') }} ">
         </a>
     </div>
@@ -35,9 +35,11 @@
 <div class="grid-container">
 
 <div class="sidebar">
+    <div>
+        <img src="/{{restaurant.image}}" alt="{{ url_for('static', filename='images/not-available.png') }} ">
+    </div>
     <h4>{{restaurant.name}}</h4>
     <p>{{restaurant.beschreibung}}</p>
-    <p>Öffnungszeiten: {{restaurant.opentime}}</p>
     <p>Adresse: {{restaurant.strasse}}</p>
     <p>PLZ: {{restaurant.plz}}</p>
 </div>
@@ -48,7 +50,7 @@
         <h4>{{x.itmname}}</h4>
         <p style="margin: 0;">{{x.description}}</p>
         <div style="display: flex; justify-content: center; align-items: center;">
-            <p><b style="font-size: 24px;">{{x.price}}</b></p><p><b style="font-size: 24px;">€</b></p>
+            <p><b style="font-size: 24px;">{{"%.2f"|format(x.price)}}</b></p><p><b style="font-size: 24px;">€</b></p>
         </div>
         <div style="display: flex; justify-content: center; align-items: center;">
             <button  type="button" onclick=showUpdateItemD({{x.id}}) style="border-radius:50px; border:none; background-color: #E98758; height: 30px; width:30px; margin-top: -5px; margin-left: 5px; margin-right: 5px;">
@@ -67,7 +69,7 @@
             <h3> Update {{x.itmname}} </h3>
             <input id="upitemname" name="upitemname" type="text" placeholder="{{x.itmname}}"}>Name</input><br><br>
             <input id="updescription" name="updescription" type="text">Description</input><br><br>
-            <input id="upprice" name="upprice" type="number">Price</input><br><br>
+            <input id="upprice" name="upprice" type="number" step=0.01>Price</input><br><br>
             <input type="file" name="image_file" accept="image/*">Image</input><br><br>
             <input id="upcategory" name="upcategory" type="text">Category</input><br><br>
             <button type="submit" onclick=displayNewCard()>Submit</button>
@@ -86,7 +88,7 @@
             <label>Beschreibung*</label>
             <input id="description" name="description" type="text"></input><br><br>
             <label>Preis*</label>
-            <input id="price" name="price" type="number"></input><br><br>
+            <input id="price" name="price" type="number" step=0.01></input><br><br>
             <label>Bild (optional)</label>
             <input type="file" name="file" accept="image/*"></input><br><br>
             <label>Kategorie</label>
@@ -124,5 +126,6 @@ function closeUpdateItemD(x) {
 }
 
 </script>
+<script src="{{ url_for('static', filename='alert.js') }}"></script>
 </body>
 </html>

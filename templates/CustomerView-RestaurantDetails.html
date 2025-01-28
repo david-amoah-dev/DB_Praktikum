@@ -24,7 +24,9 @@
             <img style="height: 50px; margin-right: 20px;" src ="{{ url_for('static', filename='images/th.jfif') }} ">
         </a>
 
-        <img style="height: 40px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
+        <a href="{{ url_for('summary')}}">
+            <img style="height: 50px; background-color: #aeaeae; padding: 5px ; border-radius: 100%; padding-right: 3px; padding-left: 7px;margin-right: 20px;" src ="{{ url_for('static', filename='images/WK.png') }} ">
+        </a>
     </div>
 
 </div>
@@ -38,9 +40,11 @@
 <div class="grid-container">
 
 <div class="sidebar">
+    <div>
+        <img src="/{{restaurant.image}}" alt="{{ url_for('static', filename='images/not-available.png') }} ">
+    </div>
     <h4>{{restaurant.name}}</h4>
     <p>{{restaurant.beschreibung}}</p>
-    <p>Öffnungszeiten: {{restaurant.opentime}}</p>
     <p>Adresse: {{restaurant.strasse}}</p>
     <p>PLZ: {{restaurant.plz}}</p>
 </div>
@@ -53,14 +57,14 @@
         <p id="itmdesc_{{loop.index}}" style="margin: 0;">{{x.description}}</p>
         <p id="itmrestoID_{{loop.index}}" style="display: none;">{{x.restoid}}</p>
         <div style="display: flex; justify-content: center; align-items: center;">
-            <p><b id="itmprice_{{loop.index}}" style="font-size: 24px;" >{{x.price}} </b></p><p style="display:inline; font-size: 24px;"><b>€</b></p>
+            <p><b id="itmprice_{{loop.index}}" style="font-size: 24px;" >{{"%.2f"|format(x.price)}} </b></p><p style="display:inline; font-size: 24px;"><b>€</b></p>
         </div>
         <div style="display: flex; justify-content: center; align-items: center;">
             <button class="add-subtract-btn" type="button" onclick=increaseAmount({{loop.index}})>+</button>
             <button class="add-subtract-btn" type="button" onclick=decreaseAmount({{loop.index}})>-</button>
         </div>
         <div style="display: flex; justify-content: center; align-items: center;">
-            <p>Amount: </p><p id="itmamount_{{loop.index}}">0</p>
+            <p>Amount: </p><p id="itmamount_{{loop.index}}">1</p>
         </div>
         <div style="display: flex; justify-content: center; align-items: center;">
             <button class="orbtn" type="button" onclick=addToCart({{loop.index}})>add to cart</button>
@@ -85,6 +89,7 @@
     function addToCart(cycle){
         let cart_item = {name: document.getElementById("itmhead_".concat(cycle.toString())).innerHTML, description: document.getElementById("itmdesc_".concat(cycle.toString())).innerHTML, price: document.getElementById("itmprice_".concat(cycle.toString())).innerHTML, amount: document.getElementById("itmamount_".concat(cycle.toString())).innerHTML, restoID: document.getElementById("itmrestoID_".concat(cycle.toString())).innerHTML};
         current_cart.push(Object.values(cart_item));
+        alert("Item has been added to cart!")
     }
 
     function place_Order(){
@@ -117,7 +122,7 @@
     function decreaseAmount(amount){
         const y = document.getElementById("itmamount_".concat(amount.toString()));
         let num = parseInt(y.innerHTML);
-        if (num > 0){
+        if (num > 1){
             num -= 1;
             y.innerHTML = num;
         }

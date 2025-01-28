@@ -34,13 +34,14 @@ def allowed_file(filename):
 class Resto(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(20), unique = True, nullable = False)
-    strasse = db.Column(db.String(20), unique = True, nullable = False)
+    strasse = db.Column(db.String(20), unique = False, nullable = False)
     plz = db.Column(db.Integer(), unique = False, nullable = False)
     lieferplz = db.Column(db.String(), unique = False, nullable = False)
     beschreibung = db.Column(db.String(555), nullable = False)
     password = db.Column(db.String(20), nullable = False)
     openTime = db.Column(db.String(), nullable = False)
-    wallet = db.Column(db.Integer, nullable=False, default=200)
+    wallet = db.Column(db.Integer, nullable=False, default=0)
+    image = db.Column(db.String, nullable=True)
 
     def __repr__(self):
        return f"Resto('{self.name}')"
@@ -48,11 +49,11 @@ class Resto(db.Model):
 class Kunde(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     vorname = db.Column(db.String(20), unique = False, nullable = False)
-    nachname = db.Column(db.String(20), unique = False, nullable = False)
+    nachname = db.Column(db.String(20), unique = True, nullable = False)
     adresse = db.Column(db.String(20), unique = False, nullable = False)
     postleitzahl = db.Column(db.Integer(), nullable = False)
     password = db.Column(db.String(20), nullable = False)
-    wallet = db.Column(db.Integer, nullable=False, default=200)
+    wallet = db.Column(db.Integer, nullable=False, default=100)
 
 
     def __repr__(self):
@@ -69,9 +70,12 @@ class Orders(db.Model):
     name = db.Column(db.Text, nullable=False) 
     adresse = db.Column(db.Text, nullable=False) 
     kunde_id = db.Column(db.Integer, nullable=False)
+    resto_name = db.Column(db.Text, nullable=False)
+    resto_adresse = db.Column(db.Text, nullable=False)
     resto_id = db.Column(db.Integer, nullable=False)
     anmerkungen = db.Column(db.Text, nullable = True)
     postleitzahl = db.Column(db.Text, nullable=False)
+    resto_postleitzahl = db.Column(db.Integer, nullable=False)
 
 ############## item Tabelle mit restaurantid
 class Item(db.Model):
@@ -124,8 +128,10 @@ def registerResto():
     if request.method == "POST":
         name = request.form.get("name")
         strasse = request.form.get("strasse")
-        plz = request.form.get("plz")
-        lieferplz = request.form.get("lieferplz")  # Get the string from the form
+        lieferplz = request.form.get("lieferplz")
+        lieferplz_stripped = lieferplz.replace(" ","")
+        fragments = lieferplz_stripped.split(",")
+        plz = request.form.get("plz")  # Get the string from the form
         beschreibung = request.form.get("beschreibung")
         password = request.form.get("password")
         openTime = {
@@ -144,17 +150,29 @@ def registerResto():
             "SundayStart": request.form.get("sunday-start"),
             "SundayEnd": request.form.get("sunday-end"),
         }
+        if 'file' not in request.files:
+            file_path = "static/images/not-available.png"
+        file = request.files['file']
+        if file.filename == '':
+            file_path = "static/images/not-available.png"
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+
 
         #openTime = {'MondayStart': '15:54', 'MondayEnd': '18:57', 'TuesdayStart': '17:58', 'TuesdayEnd': '17:58', 'WednesdayStart': '17:59', 'WednesdayEnd': '16:57', 'ThursdayStart': '18:58', 'ThursdayEnd': '17:58', 'FridayStarayEnd': '20:57', 'SaturdayStart': '17:59', 'SaturdayEnd': '15:56', 'SundayStart': '19:57', 'SundayEnd': '18:57'}
 
         new_resto = Resto(
             name=name,
             strasse=strasse,
-            plz=int(plz),
-            lieferplz=json.dumps(lieferplz),
+            plz=plz,
+            lieferplz=json.dumps(fragments),
             beschreibung=beschreibung,
             password=password,
-            openTime=json.dumps(openTime))
+            openTime=json.dumps(openTime),
+            image = file_path
+        )
         print(f"Received: {name}, {strasse}, {plz}, {beschreibung}, {password}, {openTime}")
         db.session.add(new_resto)
         db.session.commit()
@@ -231,7 +249,7 @@ def bestellansichtResto():
         Orders.time.desc()
     ).all()
 
-    return render_template('resto_Bestellansicht.html', orders=orders, json=json)
+    return render_template('resto_Bestellansicht.html', orders=orders,restoID = resto_id, json=json)
 
 
 
@@ -250,7 +268,7 @@ def CatchResto():
     for resto in available_restaurants:
         # Convert the JSON string to a Python list of postal codes
         plz_list = json.loads(resto.lieferplz)  # Extract `lieferplz` (JSON) and convert it to a list
-
+        print(plz_list)
         # Check if the customer's PLZ is in the list of available PLZs
         if customerPLZ in plz_list:
             openTime = json.loads(resto.openTime)  # Parse the restaurant's opening hours JSON
@@ -287,7 +305,7 @@ def profile():
         user = Kunde.query.get_or_404(user1["id"])
     else:
         user = Resto.query.get_or_404(user1["id"])
-    return render_template("profile.html", content=user, userType = user1["type"], json = json)
+    return render_template("profile.html", content=user, userType = user1["type"], userID = user1["id"], json = json)
     
 @app.route("/profile/update/", methods=["POST", "GET"])
 def profile_update():
@@ -469,6 +487,7 @@ def new_order():
     restoID = items[0]["restoID"]
 
     user = Kunde.query.get_or_404(userID)
+    resto = Resto.query.get_or_404(restoID)
 
     # calculate price
     total = 0.0
@@ -489,8 +508,11 @@ def new_order():
             adresse = user.adresse,
             kunde_id = userID,
             resto_id = restoID,
+            resto_adresse = resto.strasse,
+            resto_name = resto.name,
             anmerkungen = "Geld unzureichend",
-            postleitzahl = user.postleitzahl
+            postleitzahl = user.postleitzahl,
+            resto_postleitzahl = resto.plz
         )
     else:
         new_order = Orders(
@@ -502,8 +524,11 @@ def new_order():
             adresse = user.adresse,
             kunde_id = userID,
             resto_id = restoID,
+            resto_adresse = resto.strasse,
+            resto_name = resto.name,
             anmerkungen = request.form.get("anmerkungen"),
-            postleitzahl = user.postleitzahl
+            postleitzahl = user.postleitzahl,
+            resto_postleitzahl = resto.plz
         )
     db.session.add(new_order)
     db.session.commit()
@@ -623,19 +648,6 @@ def check_new_orders():
     
     resto_id = session['user']['id']
     latest_order = Orders.query.filter_by(resto_id=resto_id).order_by(Orders.time.desc()).first()
-    # new_order = Orders(
-    #     lieferstatus="in Bearbeitung",
-    #     items='[{"name": "Pizza", "price": 12, "amount": 1}]',
-    #     preis=12.0,
-    #     zahlungsstatus="ausstehend",
-    #     name="John Doe",
-    #     adresse="123 Street",
-    #     kunde_id=1,
-    #     resto_id=1,
-    #     postleitzahl="12345")
-
-    # db.session.add(new_order)
-    # db.session.commit()
     if latest_order and latest_order.lieferstatus == "in Bearbeitung":
         return {"new_order": True, "latest_order_id": latest_order.id}
 
@@ -666,9 +678,3 @@ if __name__ == '__main__':
     app.run(debug=True)
 
 
-
-
-# redirect nach login kunde
-# item price type float
-# logout func
-# delete profile_alternative.html
