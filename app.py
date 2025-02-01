@@ -310,6 +310,7 @@ def profile():
 @app.route("/profile/update/", methods=["POST", "GET"])
 def profile_update():
     user = session["user"]
+    ID = user["id"]
     if user["type"] == "Kunde":
         if request.method == "POST":
 
@@ -319,7 +320,7 @@ def profile_update():
             postleitzahl = request.form.get("postleitzahl")
             password = request.form.get("password")
 
-            user = Kunde.query.get_or_404(user["id"])
+            user = Kunde.query.get_or_404(ID)
 
             user.vorname = vorname
             user.nachname = nachname
@@ -328,6 +329,13 @@ def profile_update():
             user.password = password
 
             db.session.commit()
+
+            session['user'] = {
+                'id': ID,
+                'type': 'Kunde',
+                'plz': postleitzahl,
+                'username': nachname
+            }
     else: 
         if request.method == "POST":
 
@@ -337,7 +345,7 @@ def profile_update():
             beschreibung = request.form.get("beschreibung")
             password = request.form.get("password")
 
-            user = Resto.query.get_or_404(user["id"])
+            user = Resto.query.get_or_404(ID)
             
             user.name = name
             user.strasse = strasse
@@ -346,6 +354,13 @@ def profile_update():
             user.password = password
 
             db.session.commit()
+
+            session["user"] = {
+                "id" : ID,
+                "type" : "Resto",
+                "plz" : plz,
+                "username" : name
+            }
     
     return redirect(url_for("profile"))
 
